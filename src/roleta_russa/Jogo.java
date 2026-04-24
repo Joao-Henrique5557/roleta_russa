@@ -1,8 +1,6 @@
 package roleta_russa;
 
 import java.util.Scanner;
-import roleta_russa.Partida;
-import roleta_russa.Tutorial;
 
 public class Jogo {
 
@@ -18,9 +16,9 @@ public class Jogo {
 				tt.mostrarTutorial();
 			}
 			
-			System.out.print("Qual a dificuldade? (facil, medio, dificil: ");
-			String dificuldade = tc.next();
-			Partida ptd = new Partida(dificuldade);
+			Jogador eu = new Jogador(tc);
+			
+			Partida ptd = new Partida(tc, eu);
 			System.out.println("Fim de jogo");
 			System.out.print("Deseja jogar? (s/n): ");
 			doGame = tc.next().equals("s");

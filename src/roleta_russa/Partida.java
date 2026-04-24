@@ -1,16 +1,22 @@
 package roleta_russa;
 
+import java.util.Scanner;
+
 public class Partida {
-	private int quantBalas;
-	private String dificuldade;
 	
-	public Partida(String dificuldade) {
-		this.dificuldade = dificuldade;
-		this.quantBalas = (int) (Math.random()*5) + 2;
+	private String dificuldade;
+	private Jogador voce;
+	
+	public Partida(Scanner tc, Jogador eu) {
+		voce = new Jogador("Desafiante");
+		
+		
 		
 		System.out.println("-----------------");
 		System.out.println("Nova partida iniciada");
+		System.out.print("Qual a dificuldade? (facil, medio, dificil: ");
+		this.dificuldade = tc.next();
 		System.out.println("Dificuldade: " + dificuldade);
-		System.out.println("numero de balas: " + quantBalas);
+		System.out.println("-----------------");
 	}
 }
