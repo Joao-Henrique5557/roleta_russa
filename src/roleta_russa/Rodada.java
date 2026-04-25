@@ -1,11 +1,9 @@
 package roleta_russa;
 
 public class Rodada {
-	private int quantBalas;
 	
-	public Rodada() {
-		this.quantBalas = (int) (Math.random()*5) + 2;
-		
-		System.out.println("numero de balas: " + quantBalas);
+	public Rodada(String dificuldade) {
+		Revolve rvv = new Revolve(dificuldade);
+		System.out.println("O primeiro a jogar é você, você atira em si mesmo ou no oponente?");
 	}
 }
