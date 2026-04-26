@@ -6,9 +6,17 @@ public class Revolve {
 	private int quantBalas;
 	private boolean[] balas;
 	private int quantBalasVerdadeiras;
+	private int tempPosBalaAtual; 
 	
-	public void atirar() {
-		
+	public void atirar(Jogador alvo) {
+		if(this.balas[this.tempPosBalaAtual] == true) {
+			System.out.println("Jogador " + alvo.getNome() + " levou um tiro verdadeio!");
+			alvo.levarTiro();
+			this.tempPosBalaAtual++;
+		} else {
+			System.out.println("Jogador " + alvo.getNome() + " levou um tiro falso!");
+			this.tempPosBalaAtual++;
+		}
 	}
 	
 	private void sortearBalaVerdadeira() {
@@ -29,6 +37,7 @@ public class Revolve {
 	}
 	
 	public void rearmazenarBalas(String dificuldade) {
+		this.tempPosBalaAtual = 0;
 		this.quantBalas = (int) (Math.random()*5) + 2; // numero entre 2 e 6
 		
 		switch(dificuldade){
@@ -57,23 +66,25 @@ public class Revolve {
 		for(int i=0; i<this.quantBalasVerdadeiras; i++) { // exemplo: balas verdadeiras: 2
 			sortearBalaVerdadeira();
 		}
-	}
-	
-	public void mostrarInfoDoRevolve() {
-		if(this.quantBalas == 0) {
-			System.out.println("Erro");
-			return;
-		}
-		if(this.quantBalasVerdadeiras == 0) {
-			System.out.println("Erro");
-			return;
-		}
 		
-		System.out.println("numero de balas: " + this.quantBalas);
-		System.out.println("numero de balas verdadeiras: " + this.quantBalasVerdadeiras);
+		mostrarInfoDoRevolve("lista");
 	}
 	
-	public void mostrarInfoDoRevolve(String lista) {
+//	private void mostrarInfoDoRevolve() {
+//		if(this.quantBalas == 0) {
+//			System.out.println("Erro");
+//			return;
+//		}
+//		if(this.quantBalasVerdadeiras == 0) {
+//			System.out.println("Erro");
+//			return;
+//		}
+//		
+//		System.out.println("numero de balas: " + this.quantBalas);
+//		System.out.println("numero de balas verdadeiras: " + this.quantBalasVerdadeiras);
+//	}
+	
+	private void mostrarInfoDoRevolve(String lista) {
 		if(this.quantBalas == 0) {
 			System.out.println("Erro");
 			return;
@@ -89,5 +100,13 @@ public class Revolve {
 		if (lista == "lista") {
 			System.out.println("balas: " + Arrays.toString(balas));
 		}
+	}
+
+	public boolean[] getBalas() {
+		return balas;
+	}
+
+	public int getTempPosBalaAtual() {
+		return tempPosBalaAtual;
 	}
 }

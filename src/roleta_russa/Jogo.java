@@ -7,18 +7,23 @@ public class Jogo {
 	public static void main(String[] args) {
 		Scanner tc = new Scanner(System.in);
 		
+		// deseha jogar?
 		System.out.print("Deseja jogar? (s/n): ");
 		boolean doGame = tc.next().equals("s");
 		
-		Jogador eu = new Jogador(tc);
-			
 		while (doGame){
-			Partida ptd = new Partida(tc, eu);
+			// jogadores
+			Jogador eu = new Jogador(tc);
+			Jogador voce = new Jogador(tc);
+			
+			Partida ptd = new Partida();
+			ptd.comecarPartida(tc, eu, voce);
+			
 			System.out.println("Fim de jogo");
 			System.out.print("Deseja jogar? (s/n): ");
 			doGame = tc.next().equals("s");
 		}
-		System.out.println("Fim de jogo");
+		System.out.println("Fechando programa...");
 		tc.close();
 	}
 

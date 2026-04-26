@@ -4,19 +4,17 @@ import java.util.Scanner;
 
 public class Partida {
 	private String dificuldade;
-	private Jogador voce;
 	
-	public Partida(Scanner tc, Jogador eu) {
-		voce = new Jogador("Desafiante");
+	public void comecarPartida(Scanner tc, Jogador eu, Jogador voce) {
+		Revolve rvv = new Revolve(); // cria revolve
 		
 		System.out.println("-----------------");
 		System.out.println("Nova partida iniciada");
 		System.out.print("Qual a dificuldade? (facil, medio, dificil): ");
 		this.dificuldade = tc.next();
-		System.out.println("Dificuldade: " + dificuldade);
 		System.out.println("-----------------");
 		
-		Rodada rdd = new Rodada(dificuldade);
-		
+		Rodada rdd = new Rodada();
+		rdd.iniciarRodada(dificuldade, eu, voce, rvv, tc);
 	}
 }
