@@ -4,7 +4,7 @@ import java.util.Scanner;
 
 public class Jogador {
 	private String nome;
-	private int vidas = 3;
+	private int vidas = 2;
 	
 	public Jogador(Scanner tc) {
 		System.out.print("(Primeiro login) Qual é o seu nome? ");

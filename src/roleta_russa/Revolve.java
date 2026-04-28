@@ -67,7 +67,7 @@ public class Revolve {
 			sortearBalaVerdadeira();
 		}
 		
-		mostrarInfoDoRevolve("lista");
+		mostrarInfoDoRevolve("");
 	}
 	
 //	private void mostrarInfoDoRevolve() {
