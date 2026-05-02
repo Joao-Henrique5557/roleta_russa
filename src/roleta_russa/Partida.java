@@ -8,7 +8,6 @@ public class Partida {
 	public void comecarPartida(Scanner tc, Jogador eu, Jogador voce) {
 		Revolve rvv = new Revolve(); // cria revolve
 		
-		System.out.println("-----------------");
 		System.out.println("Nova partida iniciada");
 		System.out.print("Qual a dificuldade? (facil, medio, dificil): ");
 		this.dificuldade = tc.next();

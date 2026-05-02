@@ -12,8 +12,6 @@ public class Rodada {
 	private Scanner tc;
 	
 	public void iniciarRodada(String dificuldade, Jogador eu, Jogador voce, Revolve rvv, Scanner tc) {
-		System.out.println("Rodada: " + this.numRodada);
-		
 		this.eu = eu;
 		this.voce = voce;
 		
@@ -24,27 +22,23 @@ public class Rodada {
 		
 		rvv.rearmazenarBalas(this.dificuldade); // recarrega as palas da rodada
 		
-		while(eu.getVidas() >= 0 && voce.getVidas() >= 0) {
+		while(eu.isAlive() && voce.isAlive()) {
 			iniciarTurno();
-			verificarRevolve(rvv, this.dificuldade);
-		}
-	}
-
-	private void verificarRevolve(Revolve rvv, String dificuldade) {
-		if(rvv.getTempPosBalaAtual() > rvv.getBalas().length -1) {
-			System.out.println("Revolve vazio");
-			this.numRodada++;
-			System.out.println("Rodada: " + this.numRodada);
-			rvv.rearmazenarBalas(dificuldade);
-		} else {
-			System.out.println("capsula do revolve: " + (rvv.getTempPosBalaAtual() + 1));
+			if(rvv.isVazio(this.dificuldade)) {
+				this.numRodada++;
+			}
 		}
 	}
 	
 	private void iniciarTurno() {
 		System.out.println("Vez de " + this.vezde);
+		System.out.println("Rodada: " + this.numRodada);
+		System.out.println("----------------");
+		
 		System.out.print(this.vezde + " atira em você mesmo ou no oponente? você(1) oponente(2): ");
 		int resp = this.tc.nextInt();
+		System.out.println("----------------");
+		
 		if (this.vezde == this.eu.getNome()) {
 			if(resp == 1) {
 				this.rvv.atirar(this.eu);
