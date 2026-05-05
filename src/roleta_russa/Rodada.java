@@ -20,21 +20,17 @@ public class Rodada {
 		this.rvv = rvv;
 		this.tc = tc;
 		
-		rvv.rearmazenarBalas(this.dificuldade); // recarrega as palas da rodada
-		
 		while(eu.isAlive() && voce.isAlive()) {
-			iniciarTurno();
-			if(rvv.isVazio(this.dificuldade)) {
-				this.numRodada++;
-			}
+			iniciarTurno(); // varios turno com posse de arma				
 		}
 	}
 	
 	private void iniciarTurno() {
+		rvv.isVazio(this.dificuldade); // se a rodada começar com o revolver vazio, recarregar arma.
+		
 		System.out.println("Vez de " + this.vezde);
 		System.out.println("Rodada: " + this.numRodada);
 		System.out.println("----------------");
-		
 		System.out.print(this.vezde + " atira em você mesmo ou no oponente? você(1) oponente(2): ");
 		int resp = this.tc.nextInt();
 		System.out.println("----------------");
@@ -55,9 +51,13 @@ public class Rodada {
 			} else if (resp == 2) {
 				this.rvv.atirar(this.eu);
 				mudarVez(this.eu, this.voce);
-				System.out.println("-----------------");
 			}
 		}
+		
+		if(rvv.isVazio(this.dificuldade) && (this.eu.getVidas() < 2 || this.voce.getVidas() < 2))  {
+			// se for vazio  e pelo menos alguem ter atirado pelo menos 1 vez
+			this.numRodada++;
+		}	
 	}
 	
 	private void mudarVez(Jogador eu, Jogador voce) {
