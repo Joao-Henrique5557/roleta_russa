@@ -1,15 +1,12 @@
 package multiplayer;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.PrintWriter;
-import java.net.Inet4Address;
-import java.net.InetAddress;
-import java.net.NetworkInterface;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
-import java.net.UnknownHostException;
-import java.util.Enumeration;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -23,10 +20,7 @@ public class ServerLocal {
         System.out.println("=== SERVIDOR INICIADO ===");
         
         try {
-        	InetAddress ip = InetAddress.getLocalHost();
         	System.out.println("IP do criador da sala: " + IP.getIP());
-        } catch(UnknownHostException e){
-        	System.out.println("Erro: " + e.getMessage());
         } catch (SocketException e) {
         	System.out.println("Erro");
 			e.printStackTrace();
@@ -36,9 +30,9 @@ public class ServerLocal {
         System.out.println("--------------------------------------------");
         
         try (ServerSocket servidor = new ServerSocket(this.PORT)){
-        	while (true) {
+        	while (this.clientes.size() < 2) {
                 Socket clientSocket = servidor.accept();
-                System.out.println("✅ Cliente conectado: " + clientSocket.getInetAddress().getHostAddress());
+                System.out.println("✅ Jogador conectado: " + clientSocket.getInetAddress().getHostAddress());
 
                 // Cada cliente roda em sua própria thread
                 Thread t = new Thread(() -> tratarCliente(clientSocket));
@@ -47,9 +41,30 @@ public class ServerLocal {
         } catch (IOException e){
         	System.err.println("Erro no servidor: " + e.getMessage());
         }
+        
+        if(this.clientes.size() == 2) {
+    		System.out.println("Começando jogo...");
+    	}
 	}
 	
 	public void tratarCliente(Socket socket) {
-		
+		PrintWriter saida = null;
+        try {
+            BufferedReader entrada = new BufferedReader(
+                new InputStreamReader(socket.getInputStream())
+            );
+            
+            saida = new PrintWriter(socket.getOutputStream(), true);
+
+            // Registra o cliente na lista global
+            clientes.add(saida);
+        } catch (IOException e) {
+            System.out.println("Conexão encerrada: " + e.getMessage());
+        } finally {
+            // Remove o cliente da lista ao desconectar
+            if (saida != null) clientes.remove(saida);
+            try { socket.close(); } catch (IOException ignored) {}
+            System.out.println("Cliente desconectado.");
+        }
 	}
 }

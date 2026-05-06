@@ -30,6 +30,7 @@ public class Jogo {
 						System.out.println("--------------------------------------");
 						ServerLocal svd = new ServerLocal();
 						svd.iniciarLocal();
+						Partida ptd = new Partida();
 					} else if (resp == 2) {
 						System.out.println("Iniciando servidor global...");
 					}
@@ -38,16 +39,8 @@ public class Jogo {
 				}
 			}
 		} else if (resp == 2) {
-			System.out.print("Qual o nome do primeiro jogador? ");
-			String nomeJ1 = tc.next();
-			System.out.print("Qual o nome do segundo jogador? ");
-			String nomeJ2 = tc.next();
-			
-			Jogador eu = new Jogador();
-			eu.setNome(nomeJ1);
-			
-			Jogador voce = new Jogador();
-			voce.setNome(nomeJ2);
+			Jogador eu = new Jogador(tc);
+			Jogador voce = new Jogador(tc);
 			
 			System.out.println("------------------------");
 			

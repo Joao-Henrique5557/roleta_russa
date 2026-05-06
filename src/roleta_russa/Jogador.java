@@ -1,15 +1,24 @@
 package roleta_russa;
 
+import java.io.PrintWriter;
 import java.util.Scanner;
 
 public class Jogador {
-	private String nome = "guest";
+	private String nome;
 	private int vidas = 2;
 	private boolean isAlive = true;
 	private int quantCigarros = 0;
 	private int quantFacas = 0;
 	private int quantTelefones = 0;
 	private int quantLupas = 0;
+	PrintWriter canalJogador = null; // ????
+	
+	public Jogador(Scanner tc) {
+		if(this.nome == null) {
+			System.out.print("Qual o nome do jogador? ");
+			this.nome = tc.next();
+		}
+	}
 	
 	public void levarTiro() {
 		if(this.vidas > 0) {
@@ -64,5 +73,45 @@ public class Jogador {
 
 	public void cortarCano(Revolve rvv) {
 		
+	}
+
+	public int getQuantCigarros() {
+		return quantCigarros;
+	}
+
+	public void setQuantCigarros(int quantCigarros) {
+		this.quantCigarros = quantCigarros;
+	}
+
+	public int getQuantFacas() {
+		return quantFacas;
+	}
+
+	public void setQuantFacas(int quantFacas) {
+		this.quantFacas = quantFacas;
+	}
+
+	public int getQuantTelefones() {
+		return quantTelefones;
+	}
+
+	public void setQuantTelefones(int quantTelefones) {
+		this.quantTelefones = quantTelefones;
+	}
+
+	public int getQuantLupas() {
+		return quantLupas;
+	}
+
+	public void setQuantLupas(int quantLupas) {
+		this.quantLupas = quantLupas;
+	}
+
+	public PrintWriter getCanalJogador() {
+		return canalJogador;
+	}
+
+	public void setCanalJogador(PrintWriter canalJogador) {
+		this.canalJogador = canalJogador;
 	}
 }
