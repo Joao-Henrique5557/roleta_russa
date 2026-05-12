@@ -2,95 +2,62 @@ package roleta_russa;
 
 import java.util.Scanner;
 
-import multiplayer.ClienteJogo;
-import multiplayer.Conta;
+import multiplayer.Cliente;
 import multiplayer.ServerLocal;
 
 public class Jogo {
 
-    public static void main(String[] args) {
-        Scanner tc = new Scanner(System.in);
+	public static void main(String[] args) {
+		Scanner tc = new Scanner(System.in);
 
-        System.out.println("╔══════════════════════════════════╗");
-        System.out.println("║      ROLETA RUSSA  v2.0          ║");
-        System.out.println("╚══════════════════════════════════╝");
-        System.out.println("1) Jogar localmente (2 jogadores no mesmo PC)");
-        System.out.println("2) Hospedar servidor (multiplayer local)");
-        System.out.println("3) Conectar a um servidor");
-        System.out.println("4) Gerenciar conta");
-        System.out.print("Escolha: ");
-        int resp = tc.nextInt();
-        tc.nextLine();
+		System.out.println("=== ROLETA RUSSA ===");
+		System.out.print("Deseja jogar em rede(1) ou local com dois jogadores(2)? ");
+		int resp = tc.nextInt();
 
-        switch (resp) {
+		if (resp == 1) {
+			System.out.println("----------------------------");
+			System.out.print("Deseja criar uma sala(1) ou entrar em uma sala(2)? ");
+			int opcaoRede = tc.nextInt();
 
-            // ── Modo local ───────────────────────────────────────────────
-            case 1 -> {
-                System.out.print("Nome do jogador 1: ");
-                String nomeJ1 = tc.nextLine().trim();
-                System.out.print("Nome do jogador 2: ");
-                String nomeJ2 = tc.nextLine().trim();
+			if (opcaoRede == 1) {
+				// HOST: cria a sala E joga
+				System.out.println("Iniciando servidor local...");
+				System.out.println("--------------------------------------");
+				ServerLocal svd = new ServerLocal();
+				svd.iniciarLocal(tc); // host informa seu nome e aguarda oponente
 
-                Jogador eu   = new Jogador();
-                eu.setNome(nomeJ1);
-                Jogador voce = new Jogador();
-                voce.setNome(nomeJ2);
+			} else if (opcaoRede == 2) {
+				// CLIENTE: entra em uma sala existente
+				Cliente cliente = new Cliente();
+				boolean conectou = cliente.conectar(tc);
+				if (conectou) {
+					System.out.println("Aguardando o host iniciar a partida...");
+					// Futuramente: receber estado do jogo via socket e jogar remotamente
+				} else {
+					System.out.println("Não foi possível conectar ao servidor.");
+				}
+			}
 
-                System.out.println("────────────────────────────────────");
+		} else if (resp == 2) {
+			// LOCAL: dois jogadores no mesmo teclado
+			System.out.print("Qual o nome do primeiro jogador? ");
+			String nomeJ1 = tc.next();
+			System.out.print("Qual o nome do segundo jogador? ");
+			String nomeJ2 = tc.next();
 
-                Partida ptd = new Partida();
-                ptd.comecarPartida(tc, eu, voce);
-            }
+			Jogador eu = new Jogador();
+			eu.setNome(nomeJ1);
 
-            // ── Servidor ─────────────────────────────────────────────────
-            case 2 -> {
-                System.out.println("Iniciando servidor local...");
-                System.out.println("────────────────────────────────────");
-                ServerLocal svd = new ServerLocal();
-                
-                Thread t = new Thread(() -> {
-                    ClienteJogo cliente = new ClienteJogo();
-                    cliente.iniciar(tc);
-                });
+			Jogador voce = new Jogador();
+			voce.setNome(nomeJ2);
 
-                svd.iniciarLocal(); // bloqueante
-            }
+			System.out.println("------------------------");
 
-            // ── Cliente ──────────────────────────────────────────────────
-            case 3 -> {
-                ClienteJogo cliente = new ClienteJogo();
-                cliente.iniciar(tc);
-            }
+			Partida ptd = new Partida();
+			ptd.comecarPartida(tc, eu, voce);
+		}
 
-            // ── Gerenciar conta ──────────────────────────────────────────
-            case 4 -> {
-                System.out.println("1) Criar nova conta");
-                System.out.println("2) Ver perfil");
-                System.out.print("Escolha: ");
-                int sub = tc.nextInt();
-                tc.nextLine();
-
-                if (sub == 1) {
-                    System.out.print("Usuário: ");
-                    String u = tc.nextLine().trim();
-                    System.out.print("Senha: ");
-                    String s = tc.nextLine().trim();
-                    Conta.registrar(u, s);
-
-                } else if (sub == 2) {
-                    System.out.print("Usuário: ");
-                    String u = tc.nextLine().trim();
-                    System.out.print("Senha: ");
-                    String s = tc.nextLine().trim();
-                    Conta c = Conta.login(u, s);
-                    if (c != null) c.exibirPerfil();
-                }
-            }
-
-            default -> System.out.println("Opção inválida.");
-        }
-
-        System.out.println("Encerrando...");
-        tc.close();
-    }
+		System.out.println("Fechando programa...");
+		tc.close();
+	}
 }

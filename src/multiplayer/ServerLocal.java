@@ -1,74 +1,97 @@
 package multiplayer;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.concurrent.ConcurrentLinkedQueue;
+import java.net.SocketException;
+import java.net.UnknownHostException;
+import java.util.Scanner;
+import java.util.concurrent.CountDownLatch;
 
-/**
- * Servidor local de roleta russa.
- *
- * - Aceita conexões em loop.
- * - Mantém uma fila de matchmaking: quando há 2 jogadores esperando,
- *   forma uma sala e inicia a partida.
- */
+import roleta_russa.Jogador;
+import roleta_russa.Partida;
+
 public class ServerLocal {
-    public int PORT = 5000;
+	public int PORT = 5000;
 
-    // Fila de jogadores aguardando partida
-    private final ConcurrentLinkedQueue<ClienteHandler> fila = new ConcurrentLinkedQueue<>();
+	// Jogadores da partida
+	private Jogador jogadorHost;
+	private Jogador jogadorCliente;
 
-    // ------------------------------------------------------------------ //
-    //  Iniciar servidor
-    // ------------------------------------------------------------------ //
-    public void iniciarLocal() {
-        System.out.println("=== SERVIDOR ROLETA RUSSA ===");
+	// Comunicação com o cliente remoto
+	private PrintWriter saidaCliente;
+	private BufferedReader entradaCliente;
 
-        try {
-            System.out.println("IP local: " + IP.getIP());
-        } catch (Exception e) {
-            System.out.println("(não foi possível obter o IP local)");
-        }
+	// Sinaliza quando o cliente conectou
+	private final CountDownLatch clienteConectado = new CountDownLatch(1);
 
-        System.out.println("Aguardando conexões na porta " + PORT + "...");
-        System.out.println("--------------------------------------------");
+	public void iniciarLocal(Scanner tc) {
+		System.out.println("=== SERVIDOR INICIADO ===");
 
-        try (ServerSocket servidor = new ServerSocket(PORT)) {
-            while (true) {
-                Socket clientSocket = servidor.accept();
-                System.out.println("✅ Novo cliente: " + clientSocket.getInetAddress().getHostAddress());
+		try {
+			System.out.println("IP do servidor (compartilhe com o outro jogador): " + IP.getIP());
+		} catch (SocketException e) {
+			System.out.println("Não foi possível determinar o IP: " + e.getMessage());
+		}
 
-                ClienteHandler handler = new ClienteHandler(clientSocket, this);
-                Thread t = new Thread(handler);
-                t.setDaemon(true);
-                t.start();
-            }
-        } catch (IOException e) {
-            System.err.println("Erro fatal no servidor: " + e.getMessage());
-        }
-    }
+		System.out.print("Qual é o seu nome (host)? ");
+		String nomeHost = tc.next();
 
-    // ------------------------------------------------------------------ //
-    //  Matchmaking
-    // ------------------------------------------------------------------ //
-    public synchronized void entrarNaFila(ClienteHandler novo) {
-        fila.add(novo);
-        System.out.println("Fila de espera: " + fila.size() + " jogador(es)");
+		jogadorHost = new Jogador();
+		jogadorHost.setNome(nomeHost);
 
-        if (fila.size() >= 2) {
-            ClienteHandler host  = fila.poll();
-            ClienteHandler guest = fila.poll();
+		System.out.println("Aguardando outro jogador conectar na porta " + PORT + "...");
+		System.out.println("--------------------------------------------");
 
-            System.out.println("Sala formada: " + host.getConta().getUsername()
-                + " vs " + guest.getConta().getUsername());
+		// Thread paralela: aceita conexão do cliente enquanto host espera
+		Thread threadServidor = new Thread(() -> aguardarCliente());
+		threadServidor.setDaemon(true);
+		threadServidor.start();
 
-            // Define parceiros e informa quem é host (conduz a lógica)
-            host.setParceiro(guest, true);
-            guest.setParceiro(host, false);
-        }
-    }
+		// Host aguarda o cliente conectar
+		try {
+			clienteConectado.await(); // bloqueia até o cliente entrar
+		} catch (InterruptedException e) {
+			Thread.currentThread().interrupt();
+			System.out.println("Espera interrompida.");
+			return;
+		}
 
-    public synchronized void removerDaFila(ClienteHandler handler) {
-        fila.remove(handler);
-    }
+		System.out.println("✅ Jogador " + jogadorCliente.getNome() + " entrou na sala!");
+		System.out.println("Iniciando partida...");
+		System.out.println("--------------------------------------------");
+
+		// Inicia a partida com Scanner que lê do console do host
+		// e envia estado ao cliente via socket
+		Partida ptd = new Partida();
+		ptd.comecarPartida(tc, jogadorHost, jogadorCliente);
+	}
+
+	private void aguardarCliente() {
+		try (ServerSocket servidor = new ServerSocket(this.PORT)) {
+			Socket socketCliente = servidor.accept();
+			System.out.println("\n✅ Cliente conectado: " + socketCliente.getInetAddress().getHostAddress());
+
+			this.saidaCliente = new PrintWriter(socketCliente.getOutputStream(), true);
+			this.entradaCliente = new BufferedReader(new InputStreamReader(socketCliente.getInputStream()));
+
+			// Recebe o nome do cliente
+			String nomeCliente = entradaCliente.readLine();
+			jogadorCliente = new Jogador();
+			jogadorCliente.setNome(nomeCliente != null ? nomeCliente : "Convidado");
+
+			// Avisa o cliente que entrou
+			saidaCliente.println("BEM_VINDO:" + jogadorHost.getNome());
+
+			// Libera o host para iniciar a partida
+			clienteConectado.countDown();
+
+		} catch (IOException e) {
+			System.err.println("Erro ao aguardar cliente: " + e.getMessage());
+		}
+	}
 }
