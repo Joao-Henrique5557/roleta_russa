@@ -1,13 +1,10 @@
 package multiplayer;
 
-import java.net.Inet4Address;
-import java.net.InetAddress;
-import java.net.NetworkInterface;
-import java.net.SocketException;
+import java.net.*;
 import java.util.Enumeration;
 
 public class IP {
-	public static String getIP() throws SocketException {
+    public static String getIP() throws SocketException {
         Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces();
         while (interfaces.hasMoreElements()) {
             NetworkInterface ni = interfaces.nextElement();
@@ -19,6 +16,6 @@ public class IP {
                 }
             }
         }
-        return "IPV4 não encontrado.";
+        return "127.0.0.1";
     }
 }
