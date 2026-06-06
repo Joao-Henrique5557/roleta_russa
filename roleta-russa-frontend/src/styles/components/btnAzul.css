@@ -1,0 +1,11 @@
+.btnAzul{
+    width: auto;
+    height: auto;
+    background-color: #1E90FF;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+}
