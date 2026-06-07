@@ -1,0 +1,116 @@
+.ranking {
+  flex: 0 1 280px;
+  min-width: 200px;
+  max-height: 70vh;
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  color: var(--color-text-white);
+  overflow: hidden;
+}
+
+.ranking h1 {
+  margin: 0 0 var(--spacing-lg) 0;
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-bold);
+  flex-shrink: 0;
+}
+
+.ranking ol {
+  margin: 0;
+  padding-left: var(--spacing-lg);
+  text-align: left;
+  background: rgba(127, 127, 255, 0.08);
+  border-radius: var(--radius-md);
+  padding: var(--spacing-lg);
+  list-style: none;
+  counter-reset: ranking-counter;
+  overflow-y: auto;
+  flex: 1;
+}
+
+.ranking ol li {
+  counter-increment: ranking-counter;
+  margin-bottom: var(--spacing-md);
+  padding-bottom: var(--spacing-md);
+  border-bottom: 1px solid rgba(127, 127, 255, 0.2);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  transition: all var(--transition-fast);
+}
+
+.ranking ol li:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+
+.ranking ol li:hover {
+  padding-left: var(--spacing-md);
+  color: var(--color-secondary-light);
+}
+
+.ranking ol li::before {
+  content: counter(ranking-counter);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  background: linear-gradient(135deg, var(--color-primary), var(--color-primary-light));
+  border-radius: 50%;
+  font-weight: var(--font-weight-bold);
+  font-size: var(--font-size-sm);
+  flex-shrink: 0;
+}
+
+.ranking ol li:nth-child(1)::before {
+  background: linear-gradient(135deg, #FFD700, #FFA500);
+}
+
+.ranking ol li:nth-child(2)::before {
+  background: linear-gradient(135deg, #C0C0C0, #A9A9A9);
+}
+
+.ranking ol li:nth-child(3)::before {
+  background: linear-gradient(135deg, #CD7F32, #8B4513);
+}
+
+/* Scrollbar Styling */
+.ranking ol::-webkit-scrollbar {
+  width: 6px;
+}
+
+.ranking ol::-webkit-scrollbar-track {
+  background: rgba(127, 127, 255, 0.1);
+  border-radius: 3px;
+}
+
+.ranking ol::-webkit-scrollbar-thumb {
+  background: rgba(127, 127, 255, 0.4);
+  border-radius: 3px;
+}
+
+.ranking ol::-webkit-scrollbar-thumb:hover {
+  background: rgba(127, 127, 255, 0.6);
+}
+
+/* Responsive */
+@media (max-width: 1200px) {
+  .ranking {
+    flex: 0 1 240px;
+  }
+}
+
+@media (max-width: 768px) {
+  .ranking {
+    width: 100%;
+    flex: none;
+    max-height: 400px;
+  }
+
+  .ranking ol {
+    max-height: 350px;
+  }
+}

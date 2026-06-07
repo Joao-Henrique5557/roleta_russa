@@ -1,6 +1,6 @@
 import "../styles/components/formulario.css";
 import Input from "./Input";
-import BtnAzul from "./BtnAzul";
+import BtnAzul from "./BTNs/BtnAzul";
 
 function Formulario({ tipo }) {
     if (tipo === "login") {
