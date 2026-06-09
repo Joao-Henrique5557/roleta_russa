@@ -1,4 +1,4 @@
-import "../styles/components/input.css";
+import "../styles/components/form.css";
 
 function Input({tipoInput, placeholder}) {
     return (

@@ -1,4 +1,4 @@
-import "../styles/components/scrollIndicator.css";
+import "../styles/components/misc.css";
 
 function ScrollIndicator() {
   const scrollToFooter = () => {

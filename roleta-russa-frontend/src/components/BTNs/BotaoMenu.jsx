@@ -1,6 +1,6 @@
-function BotaoMenu({ texto }) {
+function BotaoMenu({ texto, onClick }) {
     return (
-        <button className="botao-menu">
+        <button className="botao-menu" type="button" onClick={onClick}>
             {texto}
         </button>
     );

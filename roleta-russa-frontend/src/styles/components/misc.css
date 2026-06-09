@@ -1,4 +1,8 @@
-/* Scroll Indicator - Animação melhorada */
+/* ===================================
+   COMPONENTES DIVERSOS
+   =================================== */
+
+/* Scroll Indicator */
 .scroll-indicator {
   position: absolute;
   bottom: var(--spacing-xl);
@@ -66,6 +70,18 @@
   color: var(--color-primary-light);
 }
 
+/* Música (áudio) */
+.musica {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 0;
+  height: 0;
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Responsive */
 @media (max-width: 768px) {
   .scroll-indicator {
     display: none;

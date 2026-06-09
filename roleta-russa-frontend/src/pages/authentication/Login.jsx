@@ -1,10 +1,13 @@
 import Formulario from "../../components/Formulario";
-import "../../styles/global/index.css";
+import ConfigBtn from "../../components/BTNs/Config-btn";
 
-function AutenticationLogin() {
+import "../../styles/pages/login.css";
+
+function AutenticationLogin({ onConfig, onSignup, onHome }) {
     return (
-        <div className="login-container border">
-            <Formulario tipo="login"/>
+        <div className="login-container">
+            <ConfigBtn onConfig={onConfig} />
+            <Formulario tipo="login" onSwitch={onSignup} onSubmit={onHome} />
         </div>
     )
 }

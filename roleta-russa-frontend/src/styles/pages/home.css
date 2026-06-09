@@ -1,4 +1,6 @@
-@import '../variables.css';
+/* ===================================
+   PÁGINA: HOME
+   =================================== */
 
 .home {
   color: var(--color-text-white);

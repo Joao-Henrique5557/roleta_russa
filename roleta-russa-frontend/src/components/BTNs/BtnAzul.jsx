@@ -1,9 +1,7 @@
-import "../../styles/components/btnAzul.css";
+import "../../styles/components/buttons.css";
 
-function BtnAzul({placeholder}) {
-    return (
-        <button className="btnAzul">{placeholder}</button>
-    )
+function BtnAzul({ placeholder, type = "button", onClick }) {
+  return <button className="btnAzul" type={type} onClick={onClick}>{placeholder}</button>;
 }
 
 export default BtnAzul;

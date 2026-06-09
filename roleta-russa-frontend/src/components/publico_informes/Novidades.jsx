@@ -1,5 +1,5 @@
 import CardNovidade from "./CardNovidade";
-import "../../styles/components/novidades.css";
+import "../../styles/components/cards.css";
 
 function Novidades() {
     return (

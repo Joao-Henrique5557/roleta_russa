@@ -1,38 +1,45 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef } from "react";
+import "../styles/components/misc.css";
 
-function Musica({src}) {
+function Musica({ src, volume = 0.7 }) {
   const audioRef = useRef(null);
 
   useEffect(() => {
     const audio = audioRef.current;
-    
-    // Tenta tocar automaticamente (pode ser bloqueado)
+    if (!audio) return;
+    audio.volume = volume;
+  }, [volume]);
+
+  useEffect(() => {
+    const audio = audioRef.current;
+    if (!audio) return;
+
     const playAudio = () => {
-      if (audio) {
-        audio.play().catch(() => {
-          // Se bloqueado, aguarda primeiro clique
-          const enableAudio = () => {
-            audio.play();
-            document.removeEventListener('click', enableAudio);
-            document.removeEventListener('touchstart', enableAudio);
-          };
-          document.addEventListener('click', enableAudio);
-          document.addEventListener('touchstart', enableAudio);
-        });
-      }
+      audio.volume = volume;
+      audio.play().catch(() => {
+        const enableAudio = () => {
+          audio.play();
+          document.removeEventListener("click", enableAudio);
+          document.removeEventListener("touchstart", enableAudio);
+        };
+        document.addEventListener("click", enableAudio);
+        document.addEventListener("touchstart", enableAudio);
+      });
     };
 
-    // Aguarda o áudio estar pronto
+    audio.pause();
+    audio.load();
+
     if (audio.readyState >= 2) {
       playAudio();
     } else {
-      audio.addEventListener('canplay', playAudio);
+      audio.addEventListener("canplay", playAudio);
     }
 
     return () => {
-      audio.removeEventListener('canplay', playAudio);
+      audio.removeEventListener("canplay", playAudio);
     };
-  }, []);
+  }, [src, volume]);
 
   return (
     <audio ref={audioRef} loop hidden>

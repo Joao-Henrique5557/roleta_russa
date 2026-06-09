@@ -1,15 +1,11 @@
 import BotaoMenu from "./BTNs/BotaoMenu";
-import "../styles/components/menuLateral.css";
+import "../styles/components/navigation.css";
 
-function MenuLateral() {
+function MenuLateral({ onSingleplayer, onMultiplayer }) {
     return (
         <div className="menu-lateral">
-
-            <BotaoMenu texto="Criar servidor local na minha máquina" />
-            <BotaoMenu texto="Jogar contra IA (Em breve)" />
-            <BotaoMenu texto="Jogar contra jogador presencial" />
-            <BotaoMenu texto="Gerenciar conta" />
-
+            <BotaoMenu texto="Jogar contra boot" onClick={onSingleplayer} />
+            <BotaoMenu texto="Multiplayer: entrar em sala" onClick={onMultiplayer} />
         </div>
     );
 }
