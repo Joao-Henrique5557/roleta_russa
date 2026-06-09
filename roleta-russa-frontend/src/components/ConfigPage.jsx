@@ -1,6 +1,14 @@
-import "../styles/pages/config.css"
+import "../styles/pages/config.css";
+import PropTypes from "prop-types";
 
-function ConfigPage({ volume, currentTrack, tracks, onVolumeChange, onTrackChange, onBack }) {
+function ConfigPage({
+  volume,
+  currentTrack,
+  tracks,
+  onVolumeChange,
+  onTrackChange,
+  onBack,
+}) {
   return (
     <div className="page-panel">
       <div className="page-header">
@@ -8,7 +16,9 @@ function ConfigPage({ volume, currentTrack, tracks, onVolumeChange, onTrackChang
           <h1>Configurações</h1>
           <p>Altere volume e música de fundo para a experiência do jogo.</p>
         </div>
-        <button className="primary-button" onClick={onBack}>Voltar</button>
+        <button className="primary-button" onClick={onBack}>
+          Voltar
+        </button>
       </div>
 
       <div className="config-card">
@@ -45,4 +55,17 @@ function ConfigPage({ volume, currentTrack, tracks, onVolumeChange, onTrackChang
   );
 }
 
+ConfigPage.propTypes = {
+  volume: PropTypes.number.isRequired,
+  currentTrack: PropTypes.string.isRequired,
+  tracks: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.number.isRequired,
+      label: PropTypes.string.isRequired,
+    }),
+  ).isRequired,
+  onVolumeChange: PropTypes.func.isRequired,
+  onTrackChange: PropTypes.func.isRequired,
+  onBack: PropTypes.func.isRequired,
+};
 export default ConfigPage;

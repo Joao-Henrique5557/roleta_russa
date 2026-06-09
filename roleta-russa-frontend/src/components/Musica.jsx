@@ -1,5 +1,11 @@
 import { useEffect, useRef } from "react";
 import "../styles/components/misc.css";
+import PropTypes from "prop-types";
+
+Musica.propTypes = {
+  src: PropTypes.string.isRequired,
+  volume: PropTypes.number
+};
 
 function Musica({ src, volume = 0.7 }) {
   const audioRef = useRef(null);

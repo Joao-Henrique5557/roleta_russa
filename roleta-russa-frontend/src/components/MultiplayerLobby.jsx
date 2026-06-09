@@ -1,4 +1,5 @@
 import "../styles/pages/game.css";
+import PropTypes from "prop-types";
 
 const rooms = [
   { id: "Sala Cremosa", players: "1/6", theme: "Vermelho" },
@@ -6,17 +7,31 @@ const rooms = [
   { id: "Sala Negra", players: "3/6", theme: "Preto" },
 ];
 
+MultiplayerLobby.propTypes = {
+  onBack: PropTypes.func.isRequired,
+  onConfig: PropTypes.func.isRequired,
+  onCreateRoom: PropTypes.func.isRequired,
+  onJoinRoom: PropTypes.func.isRequired,
+};
+
 function MultiplayerLobby({ onBack, onConfig, onCreateRoom, onJoinRoom }) {
   return (
     <div className="page-panel">
       <div className="page-header">
         <div>
           <h1>Multiplayer</h1>
-          <p>Entre em uma sala existente ou crie uma nova partida no estilo Among Us.</p>
+          <p>
+            Entre em uma sala existente ou crie uma nova partida no estilo Among
+            Us.
+          </p>
         </div>
         <div className="page-actions">
-          <button className="secondary-button" onClick={onConfig}>Configurações</button>
-          <button className="primary-button" onClick={onBack}>Voltar</button>
+          <button className="secondary-button" onClick={onConfig}>
+            Configurações
+          </button>
+          <button className="primary-button" onClick={onBack}>
+            Voltar
+          </button>
         </div>
       </div>
 
@@ -27,9 +42,14 @@ function MultiplayerLobby({ onBack, onConfig, onCreateRoom, onJoinRoom }) {
             <div key={room.id} className="room-item">
               <div>
                 <strong>{room.id}</strong>
-                <span>{room.players} • {room.theme}</span>
+                <span>
+                  {room.players} • {room.theme}
+                </span>
               </div>
-              <button className="room-button" onClick={() => onJoinRoom(room.id)}>
+              <button
+                className="room-button"
+                onClick={() => onJoinRoom(room.id)}
+              >
                 Entrar
               </button>
             </div>
@@ -37,7 +57,9 @@ function MultiplayerLobby({ onBack, onConfig, onCreateRoom, onJoinRoom }) {
         </div>
         <div className="room-footer">
           <p>Não encontrou uma sala? Crie a sua própria partida.</p>
-          <button className="primary-button" onClick={onCreateRoom}>Criar nova sala</button>
+          <button className="primary-button" onClick={onCreateRoom}>
+            Criar nova sala
+          </button>
         </div>
       </div>
     </div>

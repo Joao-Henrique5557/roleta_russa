@@ -2,9 +2,9 @@ import "../styles/components/misc.css";
 
 function ScrollIndicator() {
   const scrollToFooter = () => {
-    const footer = document.querySelector('.footer');
+    const footer = document.querySelector(".footer");
     if (footer) {
-      footer.scrollIntoView({ behavior: 'smooth' });
+      footer.scrollIntoView({ behavior: "smooth" });
     }
   };
 

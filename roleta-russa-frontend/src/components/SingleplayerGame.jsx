@@ -1,4 +1,10 @@
 import "../styles/pages/game.css";
+import PropTypes from "prop-types";
+
+SingleplayerGame.propTypes = {
+  onBack: PropTypes.func.isRequired,
+  onConfig: PropTypes.func.isRequired
+};
 
 function SingleplayerGame({ onBack, onConfig }) {
   return (
@@ -9,15 +15,22 @@ function SingleplayerGame({ onBack, onConfig }) {
           <p>Jogue contra o boot em um duelo rápido.</p>
         </div>
         <div className="page-actions">
-          <button className="secondary-button" onClick={onConfig}>Configurações</button>
-          <button className="primary-button" onClick={onBack}>Voltar</button>
+          <button className="secondary-button" onClick={onConfig}>
+            Configurações
+          </button>
+          <button className="primary-button" onClick={onBack}>
+            Voltar
+          </button>
         </div>
       </div>
 
       <div className="game-card">
         <div className="game-card-header">Jogar contra bot</div>
         <div className="game-card-body">
-          <p>Prepare sua arma e dispare contra o boot adversário. Esta sala simula um cenário de combate rápido.</p>
+          <p>
+            Prepare sua arma e dispare contra o boot adversário. Esta sala
+            simula um cenário de combate rápido.
+          </p>
           <div className="game-metrics">
             <div>
               <span>Vida</span>
