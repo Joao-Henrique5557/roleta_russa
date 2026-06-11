@@ -7,31 +7,15 @@ import SingleplayerGame from "./pages/game/SingleplayerGame";
 import MultiplayerLobby from "./pages/game/MultiplayerLobby";
 import ConfigPage from "./pages/ConfigPage";
 import Musica from "./components/especiais/Musica";
+import { musicTracks } from "./constants/musicTracks";
 
 import "./styles/global/index.css";
 
-// Lista de músicas disponíveis
-const musicTracks = [
-  {
-    id: 1,
-    label: "L'amour Toujours",
-    src: "/audio/L'amour Toujours - Gigi D'Agostino (Piano Cover).mp3",
-  },
-  {
-    id: 2,
-    label: "FNAF cover",
-    src: "/audio/fnafcover.mp3",
-  },
-];
-
 function App() {
   const [view, setView] = useState("login"); // view = "login"
-  const [returnView, setReturnView] = useState("login");
+  const [returnView, setReturnView] = useState("login"); // returnView é a tela para onde o usuário volta depois de sair da configuração. Inicialmente, é "login"
   const [trackId, setTrackId] = useState(1); // musica inicial = gigi
   const [volume, setVolume] = useState(0.5); // volume = 0.5
-
-  //   Array.find()
-  //   Ele retorna o primeiro elemento que satisfaz a condição.
 
   const currentTrack =
     musicTracks.find((track) => track.id === trackId) ?? musicTracks[0];
@@ -40,13 +24,13 @@ function App() {
   const openConfig = (nextView) => {
     setReturnView(nextView ?? view);
     setView("config");
-  };
+  }; // abrir a tela de configuração, guardando a tela atual para voltar depois
 
   const navigateTo = (target) => {
-    setView(target);
+    setView(target); // mudar a tela para a tela de destino
     if (target !== "config") {
       setReturnView(target);
-    }
+    } // se a tela de destino não for a configuração, atualize o returnView para a tela de destino
   };
 
   return (
