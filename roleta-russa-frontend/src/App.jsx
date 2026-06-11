@@ -3,10 +3,10 @@ import { useState } from "react";
 import Home from "./pages/Home";
 import AutenticationLogin from "./pages/authentication/Login";
 import AutenticationCadastro from "./pages/authentication/Cadastro";
-import SingleplayerGame from "./components/SingleplayerGame";
-import MultiplayerLobby from "./components/MultiplayerLobby";
-import ConfigPage from "./components/ConfigPage";
-import Musica from "./components/Musica";
+import SingleplayerGame from "./pages/game/SingleplayerGame";
+import MultiplayerLobby from "./pages/game/MultiplayerLobby";
+import ConfigPage from "./pages/ConfigPage";
+import Musica from "./components/especiais/Musica";
 
 import "./styles/global/index.css";
 

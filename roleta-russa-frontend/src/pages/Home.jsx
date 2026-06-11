@@ -1,9 +1,9 @@
 import "../styles/pages/home.css";
 
 import MenuLateral from "../components/MenuLateral";
-import Ranking from "../components/Ranking";
-import Novidades from "../components/publico_informes/Novidades";
-import Footer from "../components/publico_informes/Footer";
+import Ranking from "../components/show-to-public/Ranking";
+import Novidades from "../components/show-to-public/Novidades";
+import Footer from "../components/show-to-public/Footer";
 import ScrollIndicator from "../components/ScrollIndicator";
 import PropTypes from "prop-types";
 

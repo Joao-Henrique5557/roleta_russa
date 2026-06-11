@@ -1,6 +1,6 @@
 import "../styles/components/form.css";
 import Input from "./Input";
-import BtnAzul from "./BTNs/BtnAzul";
+import BtnAzul from "../BTNs/BtnAzul";
 
 function Formulario({ tipo, onSwitch, onSubmit }) {
   const handleSubmit = (event) => {
