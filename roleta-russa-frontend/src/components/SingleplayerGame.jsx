@@ -1,10 +1,4 @@
 import "../styles/pages/game.css";
-import PropTypes from "prop-types";
-
-SingleplayerGame.propTypes = {
-  onBack: PropTypes.func.isRequired,
-  onConfig: PropTypes.func.isRequired
-};
 
 function SingleplayerGame({ onBack, onConfig }) {
   return (

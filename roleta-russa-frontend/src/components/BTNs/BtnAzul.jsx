@@ -1,5 +1,4 @@
 import "../../styles/components/buttons.css";
-import PropTypes from "prop-types";
 
 function BtnAzul({ placeholder, type = "button", onClick }) {
   return (
@@ -8,11 +7,5 @@ function BtnAzul({ placeholder, type = "button", onClick }) {
     </button>
   );
 }
-
-BtnAzul.propTypes = {
-  placeholder: PropTypes.string.isRequired,
-  type: PropTypes.string,
-  onClick: PropTypes.func.isRequired,
-};
 
 export default BtnAzul;

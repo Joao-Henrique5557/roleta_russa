@@ -1,7 +1,6 @@
 import "../styles/components/form.css";
 import Input from "./Input";
 import BtnAzul from "./BTNs/BtnAzul";
-import PropTypes from "prop-types";
 
 function Formulario({ tipo, onSwitch, onSubmit }) {
   const handleSubmit = (event) => {
@@ -42,11 +41,4 @@ function Formulario({ tipo, onSwitch, onSubmit }) {
     );
   }
 }
-
-Formulario.propTypes = {
-  tipo: PropTypes.oneOf(["login", "cadastro"]).isRequired,
-  onSwitch: PropTypes.func.isRequired,
-  onSubmit: PropTypes.func,
-};
-
 export default Formulario;

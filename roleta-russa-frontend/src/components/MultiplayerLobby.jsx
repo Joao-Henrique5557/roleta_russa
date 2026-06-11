@@ -1,18 +1,10 @@
 import "../styles/pages/game.css";
-import PropTypes from "prop-types";
 
 const rooms = [
   { id: "Sala Cremosa", players: "1/6", theme: "Vermelho" },
   { id: "Sala Fumaça", players: "2/6", theme: "Azul" },
   { id: "Sala Negra", players: "3/6", theme: "Preto" },
 ];
-
-MultiplayerLobby.propTypes = {
-  onBack: PropTypes.func.isRequired,
-  onConfig: PropTypes.func.isRequired,
-  onCreateRoom: PropTypes.func.isRequired,
-  onJoinRoom: PropTypes.func.isRequired,
-};
 
 function MultiplayerLobby({ onBack, onConfig, onCreateRoom, onJoinRoom }) {
   return (
