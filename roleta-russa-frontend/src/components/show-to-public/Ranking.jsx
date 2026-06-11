@@ -1,4 +1,4 @@
-import "../styles/components/cards.css";
+import "../../styles/components/cards.css";
 
 function Ranking() {
   const jogadores = Array(15).fill({

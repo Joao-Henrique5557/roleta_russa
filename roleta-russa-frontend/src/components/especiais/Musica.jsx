@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import "../styles/components/misc.css";
+import "../../styles/components/misc.css";
 import PropTypes from "prop-types";
 
 Musica.propTypes = {

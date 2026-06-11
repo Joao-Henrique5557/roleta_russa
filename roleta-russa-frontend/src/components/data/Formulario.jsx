@@ -1,4 +1,4 @@
-import "../styles/components/form.css";
+import "../../styles/components/form.css";
 import Input from "./Input";
 import BtnAzul from "../BTNs/BtnAzul";
 

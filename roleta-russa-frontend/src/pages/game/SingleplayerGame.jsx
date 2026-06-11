@@ -1,4 +1,4 @@
-import "../styles/pages/game.css";
+import "../../styles/pages/game.css";
 
 function SingleplayerGame({ onBack, onConfig }) {
   return (

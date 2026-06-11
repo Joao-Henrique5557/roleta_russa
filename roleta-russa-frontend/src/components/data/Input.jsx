@@ -1,4 +1,4 @@
-import "../styles/components/form.css";
+import "../../styles/components/form.css";
 import PropTypes from "prop-types";
 
 function Input({ tipoInput, placeholder }) {

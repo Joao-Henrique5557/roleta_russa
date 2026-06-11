@@ -1,4 +1,4 @@
-import "../styles/pages/game.css";
+import "../../styles/pages/game.css";
 
 const rooms = [
   { id: "Sala Cremosa", players: "1/6", theme: "Vermelho" },

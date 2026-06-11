@@ -57,7 +57,7 @@ function App() {
       {view === "login" && (
         <AutenticationLogin
           onConfig={() => openConfig("login")}
-          onSignup={() => navigateTo("signup")}
+          onSignup={() => navigateTo("signup")} // para ir para a tela de cadastro
           onHome={() => navigateTo("home")}
         />
       )}
