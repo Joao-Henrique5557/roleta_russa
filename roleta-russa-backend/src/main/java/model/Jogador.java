@@ -5,6 +5,7 @@ public class Jogador {
 	private String nome;
 	private String senha;
 	private String email;
+	private int pontos = 0;
 	
 	// valores padrão
 	private int vidas = 3;
@@ -56,5 +57,13 @@ public class Jogador {
 
 	public void setEmail(String email) {
 		this.email = email;
+	}
+
+	public int getPontos() {
+		return pontos;
+	}
+
+	public void setPontos(int pontos) {
+		this.pontos = pontos;
 	}
 }
