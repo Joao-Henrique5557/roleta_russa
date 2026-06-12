@@ -101,12 +101,28 @@
 }
 
 /* Botão Configuração */
+.btnLogout {
+  position: fixed;
+  top: 32px;
+  left: 32px;
+  z-index: var(--z-sticky);
+}
+
 .config-btn {
   position: fixed;
   top: 32px;
   right: 32px;
-  background-color: transparent;
   z-index: var(--z-sticky);
+}
+
+.config-btn:hover {
+  transform: scale(1.1);
+  cursor: pointer;
+}
+
+.btnLogout:hover {
+  transform: scale(1.1);
+  cursor: pointer;
 }
 
 .config-link {

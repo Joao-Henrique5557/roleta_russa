@@ -1,5 +1,5 @@
 // Lista de músicas disponíveis
-export const musicTracks = [
+const musicTracks = [
   {
     id: 1,
     label: "L'amour Toujours",
@@ -10,4 +10,11 @@ export const musicTracks = [
     label: "FNAF cover",
     src: "/audio/fnafcover.mp3",
   },
+  {
+    id: 3,
+    label: "Marilyn Manson - Sweet Dreams ( cover )",
+    src: "/audio/Marilyn Manson - Sweet Dreams ( cover ).mp3",
+  }
 ];
+
+export default musicTracks;

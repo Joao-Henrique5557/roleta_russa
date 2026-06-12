@@ -6,6 +6,7 @@ import Novidades from "../components/show-to-public/Novidades";
 import Footer from "../components/show-to-public/Footer";
 import ScrollIndicator from "../components/ScrollIndicator";
 import PropTypes from "prop-types";
+import ConfigBtn from "../components/BTNs/ConfigBtn";
 
 Home.propTypes = {
   onConfig: PropTypes.func.isRequired,
@@ -17,15 +18,10 @@ Home.propTypes = {
 function Home({ onConfig, onSingleplayer, onMultiplayer, onLogout }) {
   return (
     <div className="home">
-      <div className="">
-        <button className="config-link" type="button" onClick={onConfig}>
-          Configurações
-        </button>
-        <button className="config-link" type="button" onClick={onLogout}>
-          Sair
-        </button>
-      </div>
-
+      <ConfigBtn onConfig={onConfig} />
+      <span className="logout-btn material-symbols-outlined btnLogout" onClick={onLogout}>
+        logout
+      </span>
       <div className="conteudo-principal">
         <MenuLateral
           onSingleplayer={onSingleplayer}

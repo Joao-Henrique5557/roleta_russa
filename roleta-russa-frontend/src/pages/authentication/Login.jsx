@@ -1,5 +1,5 @@
 import Formulario from "../../components/data/Formulario";
-import ConfigBtn from "../../components/BTNs/Config-btn";
+import ConfigBtn from "../../components/BTNs/ConfigBtn";
 import PropTypes from "prop-types";
 import "../../styles/pages/login.css";
 

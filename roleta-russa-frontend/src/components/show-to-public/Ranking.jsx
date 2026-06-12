@@ -1,10 +1,7 @@
 import "../../styles/components/cards.css";
-
+import jogadores from "../../constants/ranking_teste";
 function Ranking() {
-  const jogadores = Array(15).fill({
-    nome: "pedro",
-    pontos: 1200,
-  });
+  
 
   return (
     <div className="ranking">

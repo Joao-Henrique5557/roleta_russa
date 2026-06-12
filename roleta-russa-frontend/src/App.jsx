@@ -7,14 +7,14 @@ import SingleplayerGame from "./pages/game/SingleplayerGame";
 import MultiplayerLobby from "./pages/game/MultiplayerLobby";
 import ConfigPage from "./pages/ConfigPage";
 import Musica from "./components/especiais/Musica";
-import { musicTracks } from "./constants/musicTracks";
+import musicTracks from "./constants/musicTracks";
 
 import "./styles/global/index.css";
 
 function App() {
   const [view, setView] = useState("login"); // view = "login"
   const [returnView, setReturnView] = useState("login"); // returnView é a tela para onde o usuário volta depois de sair da configuração. Inicialmente, é "login"
-  const [trackId, setTrackId] = useState(1); // musica inicial = gigi
+  const [trackId, setTrackId] = useState(3); // musica inicial = Marilyn Manson - Sweet Dreams ( cover )
   const [volume, setVolume] = useState(0.5); // volume = 0.5
 
   const currentTrack =
