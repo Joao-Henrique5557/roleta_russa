@@ -1,0 +1,112 @@
+.pagePanel {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  background-image:
+    linear-gradient(rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0.75)),
+    url("/images/fundo.png");
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  color: var(--color-text-white);
+}
+
+.pageHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: var(--spacing-lg);
+  gap: var(--spacing-lg);
+}
+
+.pageHeader h1 {
+  margin: 0 0 var(--spacing-sm) 0;
+  font-size: var(--font-size-2xl);
+  font-weight: var(--font-weight-bold);
+}
+.pageHeader p {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.8);
+  font-size: var(--font-size-md);
+}
+
+.configCard {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-2xl);
+  padding: var(--spacing-lg);
+  background: rgba(0, 0, 0, 0.4);
+  border-radius: var(--radius-lg);
+  border: 1px solid rgba(127, 127, 255, 0.2);
+  margin: var(--spacing-lg);
+  flex: 1;
+  overflow-y: auto;
+}
+
+.configSection {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+.configSection h2 {
+  margin: 0;
+  font-size: var(--font-size-lg);
+  color: var(--color-text-white);
+  font-weight: var(--font-weight-semibold);
+}
+.configSection input[type="range"] {
+  width: 100%;
+  cursor: pointer;
+}
+.configSection span {
+  color: rgba(255, 255, 255, 0.8);
+  font-size: var(--font-size-sm);
+}
+
+.trackList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+.trackButton {
+  background: rgba(255, 255, 255, 0.08);
+  color: #f7f8fb;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--radius-md);
+  padding: var(--spacing-md) var(--spacing-lg);
+  cursor: pointer;
+  transition: all var(--transition-normal);
+  text-align: left;
+}
+.trackButton:hover {
+  background: rgba(255, 255, 255, 0.12);
+}
+.trackButtonActive {
+  background: linear-gradient(135deg, #6a8bff, #bd7dff);
+  border-color: #bd7dff;
+}
+
+.primaryButton {
+  background-color: var(--color-primary);
+  color: var(--color-text-white);
+  border: none;
+  border-radius: var(--radius-md);
+  padding: var(--spacing-sm) var(--spacing-lg);
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-medium);
+  cursor: pointer;
+  transition: all var(--transition-normal);
+}
+.primaryButton:hover {
+  background-color: var(--color-primary-dark);
+  transform: translateY(-2px);
+}
+
+@media (max-width: 768px) {
+  .configCard {
+    margin: var(--spacing-md);
+    padding: var(--spacing-md);
+  }
+}

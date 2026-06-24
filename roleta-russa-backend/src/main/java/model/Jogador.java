@@ -1,15 +1,10 @@
 package model;
 
 public class Jogador {
-	// valores a definir
-	private String nome;
-	private String senha;
-	private String email;
-	private int pontos = 0;
-	
 	// valores padrão
 	private int vidas = 3;
 	private boolean isAlive = true;
+	private String nome;
 
 	public void levarTiro() {
 		this.vidas--;
@@ -17,14 +12,6 @@ public class Jogador {
 			this.vidas = 0;
 			this.isAlive = false;
 		}
-	}
-
-	public String getNome() {
-		return nome;
-	}
-
-	public void setNome(String nome) {
-		this.nome = nome;
 	}
 
 	public int getVidas() {
@@ -43,27 +30,23 @@ public class Jogador {
 		this.isAlive = isAlive;
 	}
 
-	public String getSenha() {
-		return senha;
+	public String getNome() {
+		return nome;
 	}
 
-	public void setSenha(String senha) {
-		this.senha = senha;
+	public void setNome(String nome) {
+		this.nome = nome;
 	}
 
-	public String getEmail() {
-		return email;
+	public Jogador(int vidas, boolean isAlive, String nome) {
+		super();
+		this.vidas = vidas;
+		this.isAlive = isAlive;
+		this.nome = nome;
 	}
 
-	public void setEmail(String email) {
-		this.email = email;
-	}
-
-	public int getPontos() {
-		return pontos;
-	}
-
-	public void setPontos(int pontos) {
-		this.pontos = pontos;
+	public Jogador() {
+		super();
+		// TODO Auto-generated constructor stub
 	}
 }

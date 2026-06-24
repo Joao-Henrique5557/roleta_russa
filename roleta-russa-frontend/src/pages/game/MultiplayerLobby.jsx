@@ -1,61 +1,123 @@
-import "../../styles/pages/game.css";
+import { useState } from "react";
+import styles from "./game.module.css";
 
 const rooms = [
-  { id: "Sala Cremosa", players: "1/6", theme: "Vermelho" },
-  { id: "Sala Fumaça", players: "2/6", theme: "Azul" },
-  { id: "Sala Negra", players: "3/6", theme: "Preto" },
+  {
+    id: "sala-01",
+    nome: "Sala Cremosa",
+    players: 1,
+    max: 6,
+    theme: "Vermelho",
+  },
+  { id: "sala-02", nome: "Sala Fumaça", players: 2, max: 6, theme: "Azul" },
+  { id: "sala-03", nome: "Sala Negra", players: 3, max: 6, theme: "Preto" },
 ];
 
-function MultiplayerLobby({ onBack, onConfig, onCreateRoom, onJoinRoom }) {
+export default function MultiplayerLobby({
+  onBack,
+  onConfig,
+  onCreateRoom,
+  onJoinRoom,
+}) {
+  const [criando, setCriando] = useState(false);
+  const [nomeSala, setNomeSala] = useState("");
+
+  const handleCriar = () => {
+    if (!nomeSala.trim()) return;
+    onCreateRoom(nomeSala.trim());
+    setCriando(false);
+    setNomeSala("");
+  };
+
   return (
-    <div className="page-panel">
-      <div className="page-header">
+    <div className={styles.pagePanel}>
+      <div className={styles.pageHeader}>
         <div>
           <h1>Multiplayer</h1>
-          <p>
-            Entre em uma sala existente ou crie uma nova partida no estilo Among
-            Us.
-          </p>
+          <p>Entre em uma sala existente ou crie a sua própria partida.</p>
         </div>
-        <div className="page-actions">
-          <button className="secondary-button" onClick={onConfig}>
+        <div className={styles.pageActions}>
+          <button className={styles.secondaryButton} onClick={onConfig}>
             Configurações
           </button>
-          <button className="primary-button" onClick={onBack}>
+          <button className={styles.primaryButton} onClick={onBack}>
             Voltar
           </button>
         </div>
       </div>
 
-      <div className="game-card">
-        <div className="game-card-header">Salas disponíveis</div>
-        <div className="room-list">
+      <div className={styles.gameCard}>
+        <p className={styles.gameCardHeader}>Salas disponíveis</p>
+        <div className={styles.roomList}>
           {rooms.map((room) => (
-            <div key={room.id} className="room-item">
+            <div key={room.id} className={styles.roomItem}>
               <div>
-                <strong>{room.id}</strong>
+                <strong>{room.nome}</strong>
                 <span>
-                  {room.players} • {room.theme}
+                  {room.players}/{room.max} jogadores · {room.theme}
                 </span>
               </div>
               <button
-                className="room-button"
-                onClick={() => onJoinRoom(room.id)}
+                className={styles.primaryButton}
+                onClick={() => onJoinRoom(room.nome)}
+                disabled={room.players >= room.max}
               >
-                Entrar
+                {room.players >= room.max ? "Cheia" : "Entrar"}
               </button>
             </div>
           ))}
         </div>
-        <div className="room-footer">
-          <p>Não encontrou uma sala? Crie a sua própria partida.</p>
-          <button className="primary-button" onClick={onCreateRoom}>
-            Criar nova sala
-          </button>
+
+        <div className={styles.roomFooter}>
+          {criando ? (
+            <div
+              style={{
+                display: "flex",
+                gap: 8,
+                justifyContent: "center",
+                alignItems: "center",
+                flexWrap: "wrap",
+              }}
+            >
+              <input
+                type="text"
+                placeholder="Nome da sala"
+                value={nomeSala}
+                onChange={(e) => setNomeSala(e.target.value)}
+                onKeyDown={(e) => e.key === "Enter" && handleCriar()}
+                style={{
+                  padding: "8px 12px",
+                  borderRadius: 8,
+                  border: "1px solid rgba(127,127,255,0.3)",
+                  background: "rgba(0,0,0,0.4)",
+                  color: "#fff",
+                  fontSize: 15,
+                }}
+                autoFocus
+              />
+              <button className={styles.primaryButton} onClick={handleCriar}>
+                Criar
+              </button>
+              <button
+                className={styles.secondaryButton}
+                onClick={() => setCriando(false)}
+              >
+                Cancelar
+              </button>
+            </div>
+          ) : (
+            <>
+              <p>Não encontrou uma sala? Crie a sua própria partida.</p>
+              <button
+                className={styles.primaryButton}
+                onClick={() => setCriando(true)}
+              >
+                Criar nova sala
+              </button>
+            </>
+          )}
         </div>
       </div>
     </div>
   );
 }
-
-export default MultiplayerLobby;

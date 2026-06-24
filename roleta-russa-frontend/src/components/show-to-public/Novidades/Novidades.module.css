@@ -1,0 +1,23 @@
+.novidades {
+  min-width: 200px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+  overflow-y: auto;
+  padding: var(--spacing-lg);
+}
+.novidades h1 {
+  margin: 0;
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-white);
+}
+@media (max-width: 768px) {
+  .novidades {
+    width: 100%;
+    flex: none;
+    flex-direction: row;
+    gap: var(--spacing-md);
+    overflow-x: auto;
+  }
+}

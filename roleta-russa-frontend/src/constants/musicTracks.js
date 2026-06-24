@@ -14,7 +14,17 @@ const musicTracks = [
     id: 3,
     label: "Marilyn Manson - Sweet Dreams ( cover )",
     src: "/audio/Marilyn Manson - Sweet Dreams ( cover ).mp3",
-  }
+  },
+  {
+    id: 4,
+    label: "Backshot rolete original",
+    src: "/audio/Buckshot Roulette OST - General Release (extended).mp3",
+  },
+  {
+    id: 5,
+    label: "Meu estilo 'Sertanejo'",
+    src: "/audio/Aria Math (Forró).mp3",
+  },
 ];
 
 export default musicTracks;

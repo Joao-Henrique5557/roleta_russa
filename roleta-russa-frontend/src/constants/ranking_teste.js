@@ -4,6 +4,6 @@ const jogadores = [
   { nome: "joão", pontos: 1000 },
   { nome: "ana", pontos: 900 },
   { nome: "carlos", pontos: 800 },
-]
+];
 
 export default jogadores;

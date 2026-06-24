@@ -4,15 +4,11 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 
 import model.Jogador;
+import model.Usuario;
 import util.Banco;
 
 public class UsuarioDAO {
-	public void inserirUsuario(String nome, String email, String senha) {
-		Jogador jg = new Jogador();
-		jg.setNome(nome);
-		jg.setEmail(email);
-		jg.setSenha(senha);
-		
+	public void inserirUsuario(Usuario jg) {
 		try {
 			Connection con = new Banco().conectar();
 			String inserir = "insert into usuario(nome, email, senha, pontos) values (?,?,?,?);"; 
@@ -28,5 +24,4 @@ public class UsuarioDAO {
 		}
 		
 	}
-	
 }

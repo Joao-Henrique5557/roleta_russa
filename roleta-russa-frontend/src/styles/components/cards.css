@@ -102,11 +102,14 @@
 
 /* Novidades */
 .novidades {
-  flex: 0 1 280px;
+  display: flex;
+  max-height: 100vh;
   min-width: 200px;
   display: flex;
   flex-direction: column;
   gap: var(--spacing-lg);
+  overflow-y: auto;
+  padding: var(--spacing-lg);
 }
 
 .novidades h1 {
@@ -156,6 +159,19 @@
   line-height: var(--line-height-normal);
 }
 
+.novidades::-webkit-scrollbar {
+  width: 6px;
+}
+
+.novidades::-webkit-scrollbar-track {
+  background: rgba(127, 127, 255, 0.1);
+  border-radius: 3px;
+}
+
+.novidades::-webkit-scrollbar-thumb {
+  background: rgba(127, 127, 255, 0.4);
+  border-radius: 3px;
+}
 /* Responsive */
 @media (max-width: 1200px) {
   .ranking,
