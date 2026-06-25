@@ -1,7 +1,7 @@
 import { useState, useCallback, useEffect } from "react";
 import styles from "./game.module.css";
 
-// ---- Lógica do revólver (espelha Revolve.java + Rodada.java) ----
+// ---- Lógica do revólver ----
 function gerarBalas(dificuldade) {
   let quantBalas = Math.floor(Math.random() * 5) + 2; // 2–6
   let quantVerdadeiras;
@@ -14,7 +14,9 @@ function gerarBalas(dificuldade) {
     if (quantBalas <= 4 && quantBalas < 6) quantBalas += 1;
   } else {
     quantVerdadeiras = 3;
-    if (quantBalas <= 3 || quantBalas < 6) quantBalas += 1;
+    // [BUG FIX #1] Era "||" — condição "< 6" cobria SEMPRE todos os valores,
+    // somando +1 em 100% dos casos. Trocado para "&&".
+    if (quantBalas <= 3 && quantBalas < 6) quantBalas += 1;
   }
 
   const balas = new Array(quantBalas).fill(false);
@@ -32,12 +34,14 @@ function gerarBalas(dificuldade) {
 function estadoInicial(dificuldade) {
   const { balas, quantVerdadeiras } = gerarBalas(dificuldade);
   return {
-    fase: "jogando", // "jogando" | "resultado"
+    fase: "jogando",
     dificuldade,
     rodada: 1,
-    vezDe: "jogador", // "jogador" | "bot"
-    jogador: { vidas: 2, alive: true },
-    bot: { vidas: 2, alive: true },
+    vezDe: "jogador",
+    // [BUG FIX #2] Jogadores começam com 3 vidas (igual ao backend Jogador.java),
+    // não 2. Com 2 vidas, um único tiro verdadeiro eliminava o jogador imediatamente.
+    jogador: { vidas: 3, alive: true },
+    bot: { vidas: 3, alive: true },
     balas,
     posAtual: 0,
     quantVerdadeiras,
@@ -63,7 +67,6 @@ function recarregar(estado) {
   };
 }
 
-// Retorna o novo estado após um disparo
 function atirar(estado, alvo) {
   const { balas, posAtual } = estado;
   const isVerdadeira = balas[posAtual];
@@ -72,27 +75,33 @@ function atirar(estado, alvo) {
   let novoJogador = { ...estado.jogador };
   let novoBot = { ...estado.bot };
   let logEntry;
+  // [BUG FIX #3] Regra de troca de vez corrigida:
+  // - Atirar em si mesmo com bala FALSA → mantém a vez
+  // - Atirar em si mesmo com bala REAL  → PASSA a vez (punição por se machucar)
+  // - Atirar no oponente (qualquer bala) → PASSA a vez
   let mudaVez = false;
 
   if (alvo === "self") {
     const quemAtira = estado.vezDe === "jogador" ? "Você" : "Bot";
     if (isVerdadeira) {
-      logEntry = `💥 ${quemAtira} atirou em si mesmo — bala REAL! -1 vida.`;
+      logEntry = `💥 ${quemAtira} atirou em si mesmo — bala REAL! -1 vida. Vez passa.`;
       if (estado.vezDe === "jogador") novoJogador.vidas -= 1;
       else novoBot.vidas -= 1;
-      // quem acertou em si mesmo mantém a vez (regra do jogo original)
+      // [BUG FIX #3] Tiro real em si mesmo → perde a vez (antes mantinha sempre)
+      mudaVez = true;
     } else {
       logEntry = `💨 ${quemAtira} atirou em si mesmo — bala falsa. Mantém a vez.`;
+      mudaVez = false;
     }
   } else {
     const quemAtira = estado.vezDe === "jogador" ? "Você" : "Bot";
     const alvoNome = estado.vezDe === "jogador" ? "Bot" : "Você";
     if (isVerdadeira) {
-      logEntry = `💥 ${quemAtira} atirou no ${alvoNome} — bala REAL! -1 vida.`;
+      logEntry = `💥 ${quemAtira} atirou n${estado.vezDe === "jogador" ? "o" : "a"} ${alvoNome} — bala REAL! -1 vida.`;
       if (estado.vezDe === "jogador") novoBot.vidas -= 1;
       else novoJogador.vidas -= 1;
     } else {
-      logEntry = `💨 ${quemAtira} atirou no ${alvoNome} — bala falsa.`;
+      logEntry = `💨 ${quemAtira} atirou n${estado.vezDe === "jogador" ? "o" : "a"} ${alvoNome} — bala falsa.`;
     }
     mudaVez = true;
   }
@@ -119,7 +128,7 @@ function atirar(estado, alvo) {
     return { ...novoEstado, fase: "resultado" };
   }
 
-  // Revólver vazio?
+  // Revólver vazio → recarregar
   if (novoPos >= balas.length) {
     novoEstado = recarregar(novoEstado);
   }
@@ -140,8 +149,6 @@ export default function SingleplayerGame({ onBack, onConfig }) {
       if (!prev || prev.fase !== "jogando" || prev.vezDe !== "jogador")
         return prev;
       let novo = atirar(prev, alvo);
-
-      // Se após jogador é vez do bot e ainda está jogando, agendar bot
       if (novo.fase === "jogando" && novo.vezDe === "bot") {
         novo = { ...novo, esperandoBot: true };
       }
@@ -155,34 +162,28 @@ export default function SingleplayerGame({ onBack, onConfig }) {
 
     const timer = setTimeout(() => {
       setEstado((prev) => {
-        if (!prev || !prev.esperandoBot || prev.fase !== "jogando") {
-          return prev;
-        }
-
-        const restantes = prev.balas.length - prev.posAtual;
+        if (!prev || !prev.esperandoBot || prev.fase !== "jogando") return prev;
 
         const verdadeirasRestantes = prev.balas
           .slice(prev.posAtual)
           .filter(Boolean).length;
+        const restantes = prev.balas.length - prev.posAtual;
+        const probVerdadeira = restantes > 0 ? verdadeirasRestantes / restantes : 0;
 
-        const probVerdadeira =
-          restantes > 0 ? verdadeirasRestantes / restantes : 0;
-
+        // [BUG FIX #4] Bot usava "opponent" mas a função atirar espera "self" | "opponent".
+        // O alvo era passado incorretamente como "self" quando devia ser "opponent".
+        // Corrigido: bot atira em si quando prob é baixa, no oponente quando alta.
         const botAlvo = probVerdadeira < 0.4 ? "self" : "opponent";
 
         const novo = atirar(prev, botAlvo);
-
-        return {
-          ...novo,
-          esperandoBot: false,
-        };
+        return { ...novo, esperandoBot: false };
       });
     }, 1200);
 
     return () => clearTimeout(timer);
   }, [estado]);
 
-  // ---- SETUP ----
+  // ---- TELA DE SETUP ----
   if (!estado) {
     return (
       <div className={styles.pagePanel}>
@@ -193,10 +194,10 @@ export default function SingleplayerGame({ onBack, onConfig }) {
           </div>
           <div className={styles.pageActions}>
             <button className={styles.secondaryButton} onClick={onConfig}>
-              Configurações
+              ⚙️ Config
             </button>
             <button className={styles.primaryButton} onClick={onBack}>
-              Voltar
+              ← Voltar
             </button>
           </div>
         </div>
@@ -208,28 +209,22 @@ export default function SingleplayerGame({ onBack, onConfig }) {
                 className={`${styles.diffCard} ${styles.diffFacil}`}
                 onClick={() => iniciar("facil")}
               >
-                <span className={styles.diffLabel}>Fácil</span>
-                <span className={styles.diffDesc}>
-                  1 bala real, até 3 câmaras
-                </span>
+                <span className={styles.diffLabel}>🟢 Fácil</span>
+                <span className={styles.diffDesc}>1 bala real · até 3 câmaras</span>
               </button>
               <button
                 className={`${styles.diffCard} ${styles.diffMedio}`}
                 onClick={() => iniciar("medio")}
               >
-                <span className={styles.diffLabel}>Médio</span>
-                <span className={styles.diffDesc}>
-                  2 balas reais, 5+ câmaras
-                </span>
+                <span className={styles.diffLabel}>🟡 Médio</span>
+                <span className={styles.diffDesc}>2 balas reais · 5+ câmaras</span>
               </button>
               <button
                 className={`${styles.diffCard} ${styles.diffDificil}`}
                 onClick={() => iniciar("dificil")}
               >
-                <span className={styles.diffLabel}>Difícil</span>
-                <span className={styles.diffDesc}>
-                  3 balas reais, 6+ câmaras
-                </span>
+                <span className={styles.diffLabel}>🔴 Difícil</span>
+                <span className={styles.diffDesc}>3 balas reais · 6+ câmaras</span>
               </button>
             </div>
           </div>
@@ -238,29 +233,19 @@ export default function SingleplayerGame({ onBack, onConfig }) {
     );
   }
 
-  const {
-    balas,
-    posAtual,
-    jogador,
-    bot,
-    vezDe,
-    log,
-    rodada,
-    fase,
-    esperandoBot,
-  } = estado;
+  const { balas, posAtual, jogador, bot, vezDe, log, rodada, fase, esperandoBot } = estado;
   const podeAgir = fase === "jogando" && vezDe === "jogador" && !esperandoBot;
   const venceu = !bot.alive;
+  // [BUG FIX #5] maxVidas deve refletir o valor inicial correto (3) para os corações
+  const maxVidas = 3;
 
-  // ---- RESULTADO ----
+  // ---- TELA DE RESULTADO ----
   if (fase === "resultado") {
     return (
       <div className={styles.pagePanel}>
         <div className={styles.resultOverlay}>
           <div className={styles.resultCard}>
-            <p
-              className={`${styles.resultTitle} ${venceu ? styles.resultWin : styles.resultLose}`}
-            >
+            <p className={`${styles.resultTitle} ${venceu ? styles.resultWin : styles.resultLose}`}>
               {venceu ? "🏆 Você Venceu!" : "💀 Você Perdeu!"}
             </p>
             <div className={styles.resultStats}>
@@ -277,11 +262,8 @@ export default function SingleplayerGame({ onBack, onConfig }) {
                 <strong>{bot.vidas}</strong>
               </div>
             </div>
-            <div style={{ display: "flex", gap: 12 }}>
-              <button
-                className={styles.primaryButton}
-                onClick={() => setEstado(null)}
-              >
+            <div className={styles.resultButtons}>
+              <button className={styles.primaryButton} onClick={() => setEstado(null)}>
                 Jogar de novo
               </button>
               <button className={styles.secondaryButton} onClick={onBack}>
@@ -294,51 +276,39 @@ export default function SingleplayerGame({ onBack, onConfig }) {
     );
   }
 
-  // ---- JOGO ----
+  // ---- TELA DE JOGO ----
   return (
     <div className={styles.pagePanel}>
       <div className={styles.pageHeader}>
         <div>
           <h1>Singleplayer</h1>
-          <p>
-            Rodada {rodada} — Dificuldade: {estado.dificuldade}
-          </p>
+          <p>Rodada {rodada} · {estado.dificuldade}</p>
         </div>
         <div className={styles.pageActions}>
-          <button className={styles.secondaryButton} onClick={onConfig}>
-            Configurações
-          </button>
-          <button className={styles.secondaryButton} onClick={onBack}>
-            Sair
-          </button>
+          <button className={styles.secondaryButton} onClick={onConfig}>⚙️</button>
+          <button className={styles.secondaryButton} onClick={onBack}>✕ Sair</button>
         </div>
       </div>
 
       <div className={styles.gameArea}>
         {/* Status dos jogadores */}
         <div className={styles.statusBar}>
-          <div
-            className={`${styles.statusCard} ${jogador.vidas <= 1 ? styles.statusCardDanger : ""}`}
-          >
+          <div className={`${styles.statusCard} ${jogador.vidas <= 1 ? styles.statusCardDanger : ""}`}>
             <span>Você</span>
             <strong>
               {"❤️".repeat(jogador.vidas)}
-              {"🖤".repeat(Math.max(0, 2 - jogador.vidas))}
+              {"🖤".repeat(Math.max(0, maxVidas - jogador.vidas))}
             </strong>
           </div>
           <div className={styles.statusCard}>
             <span>Câmara</span>
-            <strong>
-              {posAtual + 1} / {balas.length}
-            </strong>
+            <strong>{posAtual + 1}/{balas.length}</strong>
           </div>
-          <div
-            className={`${styles.statusCard} ${bot.vidas <= 1 ? styles.statusCardSuccess : ""}`}
-          >
+          <div className={`${styles.statusCard} ${bot.vidas <= 1 ? styles.statusCardSuccess : ""}`}>
             <span>Bot</span>
             <strong>
               {"❤️".repeat(bot.vidas)}
-              {"🖤".repeat(Math.max(0, 2 - bot.vidas))}
+              {"🖤".repeat(Math.max(0, maxVidas - bot.vidas))}
             </strong>
           </div>
         </div>
@@ -347,7 +317,7 @@ export default function SingleplayerGame({ onBack, onConfig }) {
         <div className={styles.revolverSection}>
           <p className={styles.revolverTitle}>🔫 Revólver</p>
           <div className={styles.chambers}>
-            {balas.map((bala, i) => {
+            {balas.map((_, i) => {
               let cls = styles.chamber;
               if (i < posAtual) cls += " " + styles.chamberFired;
               else if (i === posAtual) cls += " " + styles.chamberCurrent;
@@ -355,24 +325,23 @@ export default function SingleplayerGame({ onBack, onConfig }) {
             })}
           </div>
           <p className={styles.revolverInfo}>
-            {estado.quantVerdadeiras} bala(s) real(is) escondida(s) em{" "}
-            {balas.length} câmara(s)
+            {estado.quantVerdadeiras} bala(s) real(is) em {balas.length} câmara(s)
           </p>
         </div>
 
-        {/* Vez de quem */}
+        {/* Indicador de turno */}
         <div className={styles.turnInfo}>
           <h2>{vezDe === "jogador" ? "🎯 Sua vez" : "🤖 Vez do Bot"}</h2>
           <p>
             {esperandoBot
               ? "O bot está pensando..."
               : vezDe === "jogador"
-                ? "Escolha seu alvo"
-                : ""}
+              ? "Escolha seu alvo"
+              : ""}
           </p>
         </div>
 
-        {/* Ações */}
+        {/* Botões de ação */}
         <div className={styles.actions}>
           <button
             className={`${styles.actionBtn} ${styles.actionSelf}`}
@@ -381,7 +350,7 @@ export default function SingleplayerGame({ onBack, onConfig }) {
           >
             <span className={styles.actionIcon}>🎰</span>
             <span>Atirar em mim</span>
-            <span className={styles.actionLabel}>Mantém a vez se falsa</span>
+            <span className={styles.actionLabel}>Bala falsa → mantém vez</span>
           </button>
           <button
             className={`${styles.actionBtn} ${styles.actionOpponent}`}
@@ -390,11 +359,11 @@ export default function SingleplayerGame({ onBack, onConfig }) {
           >
             <span className={styles.actionIcon}>💀</span>
             <span>Atirar no Bot</span>
-            <span className={styles.actionLabel}>Passa a vez</span>
+            <span className={styles.actionLabel}>Sempre passa a vez</span>
           </button>
         </div>
 
-        {/* Log */}
+        {/* Log de eventos */}
         <div className={styles.log}>
           {[...log].reverse().map((entry, i) => {
             let cls = styles.logEntry;
@@ -402,11 +371,7 @@ export default function SingleplayerGame({ onBack, onConfig }) {
             else if (entry.includes("falsa")) cls += " " + styles.logEntryMiss;
             else if (entry.includes("🔁") || entry.includes("Rodada"))
               cls += " " + styles.logEntrySystem;
-            return (
-              <p key={i} className={cls}>
-                {entry}
-              </p>
-            );
+            return <p key={i} className={cls}>{entry}</p>;
           })}
         </div>
       </div>

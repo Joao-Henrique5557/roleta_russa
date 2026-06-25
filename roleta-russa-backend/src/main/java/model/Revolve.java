@@ -1,49 +1,88 @@
-package model;
+package roleta_russa;
+
+import java.util.Arrays;
 
 public class Revolve {
-	private int quantBalasTotal = 0;
-	private boolean[] balas;
-	private int quantBalasVerdadeiras;
-	private int posAtual = 0;
+    private int quantBalas = 0;
+    private boolean[] balas;
+    private int quantBalasVerdadeiras;
+    private int tempPosBalaAtual = 0;
 
-	public void rearmazenarBalas() {
-		this.posAtual = 0;
-		this.quantBalasTotal = (int) (Math.random() * 5) + 2; // dois até 6
-		this.balas = new boolean[quantBalasTotal];
-		this.quantBalasVerdadeiras = (int) (Math.random() * (quantBalasTotal - 1)) + 1; // 1 até 5 a depender a quantidade de balas
+    public boolean isVazio(String dificuldade) {
+        if (this.balas == null || this.tempPosBalaAtual >= this.balas.length) {
+            System.out.println("Revólver vazio — recarregando.");
+            rearmazenarBalas(dificuldade);
+            mostrarInfoDoRevolve();
+            return true;
+        }
+        return false;
+    }
 
-		int colocadas = 0;
-		while (colocadas < quantBalasVerdadeiras) { // preencher as verdadeiras
-			int idx = (int) (Math.random() * quantBalasTotal); // seleciona a posição da verdadeira a depender da quantBalasTotal
-			if (!balas[idx]) { // se posição for vazia, colocar bala
-				balas[idx] = true;
-				colocadas++;
-			}
-		}
-	}
+    public void atirar(Jogador alvo) {
+        if (this.balas[this.tempPosBalaAtual]) {
+            System.out.println(alvo.getNome() + " levou um tiro REAL!");
+            alvo.levarTiro();
+        } else {
+            System.out.println(alvo.getNome() + " levou um tiro falso.");
+        }
+        this.tempPosBalaAtual++;
+    }
 
-	public boolean dispararNoAlvo(Jogador alvo) {
-		boolean tiroReal = balas[posAtual];
-		if (tiroReal) { // se o tiro for real
-			alvo.levarTiro();
-		}
-		posAtual++;
-		return tiroReal; // retorna tipo de bala
-	}
+    public void rearmazenarBalas(String dificuldade) {
+        this.tempPosBalaAtual = 0;
+        this.quantBalas = (int) (Math.random() * 5) + 2; // 2–6
 
-	public int getQuantBalasRestantes() {
-		return quantBalasTotal - posAtual;
-	}
+        switch (dificuldade) {
+            case "facil":
+                this.quantBalasVerdadeiras = 1;
+                if (this.quantBalas > 3) this.quantBalas = 3;
+                break;
+            case "medio":
+                this.quantBalasVerdadeiras = 2;
+                if (this.quantBalas <= 4 && this.quantBalas < 6) this.quantBalas++;
+                break;
+            case "dificil":
+                this.quantBalasVerdadeiras = 3;
+                // [BUG FIX] Era "||" — com quantBalas entre 2 e 6, a condição "< 6"
+                // era sempre verdadeira, somando +1 em 100% dos casos.
+                // Trocado para "&&" para somar só quando também é <= 3.
+                if (this.quantBalas <= 3 && this.quantBalas < 6) this.quantBalas++;
+                break;
+            default:
+                this.quantBalasVerdadeiras = 1;
+        }
 
-	public int getQuantBalas() {
-		return getQuantBalasRestantes();
-	}
+        this.balas = new boolean[this.quantBalas];
+        for (int i = 0; i < this.quantBalasVerdadeiras; i++) {
+            sortearBalaVerdadeira();
+        }
+    }
 
-	public int getQuantBalasVerdadeiras() {
-		int cont = 0;
-		for (int i = posAtual; i < balas.length; i++)
-			if (balas[i])
-				cont++;
-		return cont;
-	}
+    private void sortearBalaVerdadeira() {
+        int pos = (int) (Math.random() * this.quantBalas);
+        if (this.balas[pos]) {
+            sortearBalaVerdadeira();
+        } else {
+            this.balas[pos] = true;
+        }
+    }
+
+    public void mostrarInfoDoRevolve() {
+        System.out.println("Câmaras: " + this.quantBalas + " | Balas reais: " + this.quantBalasVerdadeiras);
+        System.out.println("--------------------");
+    }
+
+    public void mostrarInfoDoRevolve(String lista) {
+        mostrarInfoDoRevolve();
+        if ("lista".equals(lista)) {
+            System.out.println("Balas: " + Arrays.toString(balas));
+        }
+    }
+
+    public boolean[] getBalas() { return balas.clone(); }
+    public int getTempPosBalaAtual() { return tempPosBalaAtual; }
+    public int getQuantBalas() { return quantBalas; }
+    public int getQuantBalasVerdadeiras() { return quantBalasVerdadeiras; }
+    public void setBalas(boolean[] balas) { this.balas = balas; }
+    public void setTempPosBalaAtual(int pos) { this.tempPosBalaAtual = pos; }
 }

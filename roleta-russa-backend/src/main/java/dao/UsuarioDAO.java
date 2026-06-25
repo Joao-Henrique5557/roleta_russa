@@ -2,26 +2,28 @@ package dao;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-
-import model.Jogador;
 import model.Usuario;
 import util.Banco;
 
 public class UsuarioDAO {
-	public void inserirUsuario(Usuario jg) {
-		try {
-			Connection con = new Banco().conectar();
-			String inserir = "insert into usuario(nome, email, senha, pontos) values (?,?,?,?);"; 
-			PreparedStatement pst = con.prepareStatement(inserir);
-			pst.setString(1, jg.getNome());
-			pst.setString(2, jg.getEmail());
-			pst.setString(3, jg.getSenha());
-			pst.setInt(4, jg.getPontos());
+
+	public void inserirUsuario(Usuario u) {
+
+		String sql = "INSERT INTO usuario(nome, email, senha, pontos) VALUES (?,?,?,?)";
+
+		try (Connection con = new Banco().conectar(); PreparedStatement pst = con.prepareStatement(sql)) {
+
+			pst.setString(1, u.getNome());
+			pst.setString(2, u.getEmail());
+			pst.setString(3, u.getSenha());
+			pst.setInt(4, u.getPontos());
+
 			pst.executeUpdate();
-			pst.close();
+
+			System.out.println("Usuário inserido com sucesso");
+
 		} catch (Exception e) {
-			System.out.println(e);
+			e.printStackTrace();
 		}
-		
 	}
 }

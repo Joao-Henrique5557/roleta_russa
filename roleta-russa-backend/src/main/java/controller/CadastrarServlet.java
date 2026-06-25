@@ -17,37 +17,59 @@ import dao.UsuarioDAO;
 @WebServlet("/CadastrarServlet")
 public class CadastrarServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-       
-    /**
-     * @see HttpServlet#HttpServlet()
-     */
-    public CadastrarServlet() {
-        super();
-        // TODO Auto-generated constructor stub
-    }
 
 	/**
-	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
+	 * @see HttpServlet#HttpServlet()
 	 */
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		
+	public CadastrarServlet() {
+		super();
+		// TODO Auto-generated constructor stub
 	}
 
 	/**
-	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
+	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
+	 *      response)
 	 */
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+
+		String nome = request.getParameter("nome");
+		String email = request.getParameter("email");
+		String senha = request.getParameter("senha");
+
+		Usuario u = new Usuario();
+		u.setNome(nome);
+		u.setEmail(email);
+		u.setSenha(senha);
+		u.setPontos(0);
+
+		new UsuarioDAO().inserirUsuario(u);
+
+		response.getWriter().write("Cadastro via URL realizado");
+	}
+
+	/**
+	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
+	 *      response)
+	 */
+	protected void doPost(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+
+		request.setCharacterEncoding("UTF-8");
+		response.setCharacterEncoding("UTF-8");
+
 		String nomeDado = request.getParameter("nome");
 		String senhaDada = request.getParameter("senha");
-		String EmailDado = request.getParameter("email");
-		
+		String emailDado = request.getParameter("email");
+
 		Usuario user = new Usuario();
 		user.setNome(nomeDado);
 		user.setSenha(senhaDada);
-		user.setEmail(EmailDado);
-		
-		new UsuarioDAO().inserirUsuario(user);
-		
+		user.setEmail(emailDado);
+
+		UsuarioDAO dao = new UsuarioDAO();
+		dao.inserirUsuario(user);
+
+		response.sendRedirect("sucesso.html");
 	}
 
 }

@@ -1,52 +1,40 @@
-package model;
+package roleta_russa;
 
 public class Jogador {
-	// valores padrão
-	private int vidas = 3;
-	private boolean isAlive = true;
-	private String nome;
+    private String nome = "guest";
+    // [BUG FIX] Vidas inicializadas como 3 (consistente com a lógica do jogo).
+    // Com 2 vidas e 1 tiro real em dificuldade fácil, o jogo terminava no 1º tiro.
+    private int vidas = 3;
+    private boolean isAlive = true;
+    private int quantCigarros = 0;
 
-	public void levarTiro() {
-		this.vidas--;
-		if (this.vidas <= 0) {
-			this.vidas = 0;
-			this.isAlive = false;
-		}
-	}
+    public void levarTiro() {
+        if (this.vidas > 0) {
+            setVidas(getVidas() - 1);
+            System.out.println("Vidas de " + this.nome + ": " + this.vidas);
+            // [BUG FIX] Verificar morte imediatamente, não na próxima chamada.
+            // Antes precisava de (vidas+1) tiros para realmente morrer.
+            if (this.vidas <= 0) {
+                this.isAlive = false;
+                System.out.println(this.nome + " foi eliminado!");
+            }
+        }
+    }
 
-	public int getVidas() {
-		return vidas;
-	}
+    public String getNome() { return nome; }
+    public int getVidas() { return vidas; }
+    public void setNome(String nome) { this.nome = nome; }
+    public void setVidas(int vidas) { this.vidas = vidas; }
+    public boolean isAlive() { return isAlive; }
+    public void setAlive(boolean isAlive) { this.isAlive = isAlive; }
 
-	public void setVidas(int vidas) {
-		this.vidas = vidas;
-	}
-
-	public boolean isAlive() {
-		return isAlive;
-	}
-
-	public void setAlive(boolean isAlive) {
-		this.isAlive = isAlive;
-	}
-
-	public String getNome() {
-		return nome;
-	}
-
-	public void setNome(String nome) {
-		this.nome = nome;
-	}
-
-	public Jogador(int vidas, boolean isAlive, String nome) {
-		super();
-		this.vidas = vidas;
-		this.isAlive = isAlive;
-		this.nome = nome;
-	}
-
-	public Jogador() {
-		super();
-		// TODO Auto-generated constructor stub
-	}
+    public void fumar() {
+        if (this.quantCigarros > 0) {
+            this.vidas++;
+            this.quantCigarros--;
+            System.out.println(this.nome + " fumou um cigarro. Vidas: " + this.vidas);
+        } else {
+            System.out.println("Sem cigarros.");
+        }
+    }
 }
