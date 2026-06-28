@@ -3,18 +3,21 @@ import styles from "./Ranking.module.css";
 import axios from "axios";
 
 function Ranking({ urlAPI }) {
-  // CORREÇÃO 1: Inicializa como array vazio para evitar quebras no primeiro render
   const [jogadores, setJogadores] = useState([]);
+  const [loading, setLoanding] = useState(false);
 
   useEffect(() => {
     const listarUsuarios = async () => {
       try {
+        setLoanding(true);
         // CORREÇÃO 2: try/catch movido para dentro da função assíncrona
         const response = await axios.get(`${urlAPI}/ListarUsuarios`);
         setJogadores(response.data);
       } catch (error) {
         alert("Erro ao buscar dados do ranking");
         console.error("Error ao listar usuários: ", error);
+      }finally{
+        setLoanding(false);
       }
     };
 
@@ -26,6 +29,7 @@ function Ranking({ urlAPI }) {
   return (
     <div className={styles.ranking}>
       <h1>Ranking Global</h1>
+      {loading&& <p>Carregando</p>}
       <ol className={styles.list}>
         {jogadores.map((jogador, index) => (
           <li key={jogador.id || index} className={styles.item}>
