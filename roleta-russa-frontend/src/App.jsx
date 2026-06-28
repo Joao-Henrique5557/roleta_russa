@@ -14,6 +14,7 @@ function App() {
   const [returnView, setReturnView] = useState("login");
   const [trackId, setTrackId] = useState(4);
   const [volume, setVolume] = useState(0.5);
+  const [urlAPI] = useState("https://roleta-russa-api.onrender.com");
 
   const currentTrack =
     musicTracks.find((t) => t.id === trackId) ?? musicTracks[0];
@@ -36,12 +37,14 @@ function App() {
           onConfig={() => openConfig("login")}
           onSignup={() => navigateTo("signup")}
           onHome={() => navigateTo("home")}
+          urlAPI={urlAPI}
         />
       )}
       {view === "signup" && (
         <AutenticationCadastro
           onConfig={() => openConfig("signup")}
           onLogin={() => navigateTo("login")}
+          urlAPI={urlAPI}
         />
       )}
       {view === "home" && (
@@ -50,6 +53,7 @@ function App() {
           onSingleplayer={() => navigateTo("singleplayer")}
           onMultiplayer={() => navigateTo("multiplayer")}
           onLogout={() => navigateTo("login")}
+          urlAPI={urlAPI}
         />
       )}
       {view === "singleplayer" && (

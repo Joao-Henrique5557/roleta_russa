@@ -1,4 +1,4 @@
-package roleta_russa;
+package model.jogo;
 
 public class Jogador {
     private String nome = "guest";

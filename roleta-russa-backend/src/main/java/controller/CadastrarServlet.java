@@ -5,7 +5,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import model.Usuario;
+import model.Beans.Usuario;
 
 import java.io.IOException;
 
@@ -56,10 +56,20 @@ public class CadastrarServlet extends HttpServlet {
 
 		request.setCharacterEncoding("UTF-8");
 		response.setCharacterEncoding("UTF-8");
+		response.setContentType("application/json");
+
+		java.io.PrintWriter out = response.getWriter();
 
 		String nomeDado = request.getParameter("nome");
 		String senhaDada = request.getParameter("senha");
 		String emailDado = request.getParameter("email");
+
+		// Validação de segurança
+		if (nomeDado == null || senhaDada == null || emailDado == null || nomeDado.isEmpty()) {
+			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+			out.write("{\"error\": \"Parâmetros ausentes no formulário do Talend\"}");
+			return;
+		}
 
 		Usuario user = new Usuario();
 		user.setNome(nomeDado);
@@ -67,9 +77,18 @@ public class CadastrarServlet extends HttpServlet {
 		user.setEmail(emailDado);
 
 		UsuarioDAO dao = new UsuarioDAO();
-		dao.inserirUsuario(user);
 
-		response.sendRedirect("sucesso.html");
+		// Agora validamos o booleano que o DAO retorna!
+		boolean sucesso = dao.inserirUsuario(user);
+
+		if (sucesso) {
+			response.setStatus(HttpServletResponse.SC_CREATED);
+			out.write("{\"message\": \"Usuário cadastrado com sucesso no banco do Netlify!\"}");
+		} else {
+			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+			out.write(
+					"{\"error\": \"O DAO falhou ao inserir. Verifique o console do Eclipse para ver o erro de SQL.\"}");
+		}
 	}
 
 }

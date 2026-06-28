@@ -2,39 +2,96 @@ import styles from "./Formulario.module.css";
 import Input from "../Imput/Input";
 import BtnAzul from "../../BTNs/BtnAzul/BtnAzul";
 import { useState, useRef } from "react";
+import axios from "axios";
 
-function Formulario({ tipo, onSwitch, onSubmit }) {
+function Formulario({ tipo, onSwitch, onSubmit, urlAPI }) {
   const [usuario, setUsuario] = useState("");
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
   const usuarioRef = useRef(null);
   const emailRef = useRef(null);
   const senhaRef = useRef(null);
+  
 
   function isOk() {
     if (!usuario) {
+      // campo usuario vazio?
       usuarioRef.current?.focus();
+      alert("preencha o campo usuario");
       return false;
     }
     if (tipo === "cadastro" && !email) {
+      // campo email de cadastro vazio?
       emailRef.current?.focus();
+      alert("preencha o campo email");
       return false;
     }
     if (!senha) {
+      // campo senha vazio?
       senhaRef.current?.focus();
+      alert("preencha o campo senha");
       return false;
     }
     return true;
   }
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    if (!isOk()) return;
-    if (onSubmit) onSubmit({ usuario, email, senha });
+  const handleSubmit = async (event) => {
+    event.preventDefault(); // Não recarrega a página
+    if (!isOk()) return;    // Validação local de campos vazios
+
+    const params = new URLSearchParams();
+    params.append("usuario", usuario);
+    params.append("senha", senha);
+
+    if (tipo === "cadastro") {
+      // --- FLUXO DE CADASTRO ---
+      try {
+        const paramsCadastro = new URLSearchParams();
+        paramsCadastro.append("nome", usuario);
+        paramsCadastro.append("email", email);
+        paramsCadastro.append("senha", senha);
+
+        const response = await axios.post(`${urlAPI}/CadastrarServlet`, paramsCadastro);
+
+        if (response.status === 200 || response.status === 201) {
+          alert("Cadastro realizado com sucesso!");
+          onSwitch(); // Muda automaticamente para a tela de Login
+        }
+      } catch (error) {
+        console.error(error);
+        alert("Erro ao realizar cadastro. Tente outro e-mail.");
+      }
+
+    } else if (tipo === "login") {
+      // --- FLUXO DE LOGIN COMPORTAMENTO SEGURO (OPÇÃO 2) ---
+      try {
+        // Faz um POST enviando apenas as credenciais digitadas
+        const response = await axios.post(`${urlAPI}/AutenticarServlet`, params);
+
+        if (response.status === 200) {
+          const dadosUsuarioLogado = response.data;
+          alert(`Bem-vindo de volta, ${dadosUsuarioLogado.nome}!`);
+          
+          // Opcional: Salvar na sessão o nome/pontos do usuário para exibir no jogo
+          sessionStorage.setItem("jogador", JSON.stringify(dadosUsuarioLogado));
+
+          onSubmit(); // Avança para a tela Home do app
+        }
+      } catch (error) {
+        console.error(error);
+        if (error.response && error.response.status === 401) {
+          alert("Usuário ou senha incorretos.");
+        } else {
+          alert("Erro ao conectar com o servidor.");
+        }
+      }
+    }
   };
 
   return (
     <form className={styles.form} onSubmit={handleSubmit}>
+      {" "}
+      {/* // executa funcao de gerenciar o submit */}
       <Input
         ref={usuarioRef}
         tipoInput="text"

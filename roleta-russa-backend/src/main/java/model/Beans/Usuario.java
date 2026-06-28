@@ -1,11 +1,21 @@
-package model;
+package model.Beans;
 
 public class Usuario {
 	// valores a definir
+	private int id; 
 	private String nome;
 	private String senha;
 	private String email;
 	private int pontos = 0;
+
+	// GETTER E SETTER DO ID (ADICIONADOS)
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
 
 	public String getNome() {
 		return nome;
@@ -39,8 +49,10 @@ public class Usuario {
 		this.pontos = pontos;
 	}
 
-	public Usuario(String nome, String senha, String email, int pontos) {
+	// Construtor completo atualizado para incluir o id
+	public Usuario(int id, String nome, String senha, String email, int pontos) {
 		super();
+		this.id = id;
 		this.nome = nome;
 		this.senha = senha;
 		this.email = email;

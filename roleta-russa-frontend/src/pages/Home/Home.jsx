@@ -14,7 +14,7 @@ Home.propTypes = {
   onLogout: PropTypes.func.isRequired,
 };
 
-function Home({ onConfig, onSingleplayer, onMultiplayer, onLogout }) {
+function Home({ onConfig, onSingleplayer, onMultiplayer, onLogout, urlAPI }) {
   return (
     <div className={styles.home}>
       <ConfigBtn onConfig={onConfig} />
@@ -29,8 +29,8 @@ function Home({ onConfig, onSingleplayer, onMultiplayer, onLogout }) {
           onSingleplayer={onSingleplayer}
           onMultiplayer={onMultiplayer}
         />
-        <Ranking />
-        <Novidades />
+        <Ranking urlAPI={urlAPI}/>
+        <Novidades urlAPI={urlAPI}/>
         <ScrollIndicator />
       </div>
       <Footer />

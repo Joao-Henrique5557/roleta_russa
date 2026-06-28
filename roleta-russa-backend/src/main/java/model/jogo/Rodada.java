@@ -1,4 +1,4 @@
-package roleta_russa;
+package model.jogo;
 
 import java.util.Scanner;
 

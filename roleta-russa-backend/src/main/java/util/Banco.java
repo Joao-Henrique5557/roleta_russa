@@ -4,10 +4,13 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 
 public class Banco {
-	private String driver = "com.mysql.cj.jdbc.Driver";
-	private String url = "jdbc:mysql://localhost:3306/roleta_russa?useTimezone=True";
-	private String user = "root";
-	private String password = "5557";
+	private String driver = "org.postgresql.Driver";
+
+	private String url = "jdbc:postgresql://ep-tiny-star-aj8bth4t.c-3.us-east-2.db.netlify.com/netlifydb?sslmode=require";
+
+	private String user = "netlifydb_owner";
+
+	private String password = "npg_G8qrp6BfRUIe";
 
 	public Connection conectar() {
 		Connection con = null;
@@ -16,9 +19,8 @@ public class Banco {
 			con = DriverManager.getConnection(url, user, password);
 			return con;
 		} catch (Exception e) {
-			System.out.println(e);
+			System.out.println("Erro ao conectar ao banco do Netlify: " + e);
 			return null;
 		}
 	}
-
 }
