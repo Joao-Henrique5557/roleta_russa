@@ -1,7 +1,7 @@
 import styles from "./Formulario.module.css";
 import Input from "../Imput/Input";
 import BtnAzul from "../../BTNs/BtnAzul/BtnAzul";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import axios from "axios";
 
 function Formulario({ tipo, onSwitch, onSubmit, urlAPI }) {
@@ -13,6 +13,7 @@ function Formulario({ tipo, onSwitch, onSubmit, urlAPI }) {
   const senhaRef = useRef(null);
   const [error, setError] = useState(null);
   const [loading, setLoanding] = useState(false);
+
   function isOk() {
     if (!usuario) {
       // campo usuario vazio?
@@ -58,6 +59,7 @@ function Formulario({ tipo, onSwitch, onSubmit, urlAPI }) {
         const response = await axios.post(
           `${urlAPI}/CadastrarServlet`,
           paramsCadastro,
+          { timeout: 5000 },
         );
 
         if (response.status === 200 || response.status === 201) {
@@ -65,13 +67,17 @@ function Formulario({ tipo, onSwitch, onSubmit, urlAPI }) {
           onSwitch(); // Muda automaticamente para a tela de Login
         }
       } catch (error) {
-        console.error(error);
-        setError("Erro ao realizar cadastro. Tente outro e-mail.");
-      } finally{
+        if (error.code === "ECONNABORTED") {
+          setError("Carregamento lento, tente novamente.");
+          console.error("timeout executado");
+        } else {
+          console.error(error);
+          setError("Erro ao realizar cadastro. Tente outro e-mail.");
+        }
+      } finally {
         setLoanding(false);
       }
     } else if (tipo === "login") {
-      // --- FLUXO DE LOGIN COMPORTAMENTO SEGURO (OPÇÃO 2) ---
       try {
         // Faz um POST enviando apenas as credenciais digitadas
         const response = await axios.post(
@@ -83,9 +89,8 @@ function Formulario({ tipo, onSwitch, onSubmit, urlAPI }) {
           const dadosUsuarioLogado = response.data;
           alert(`Bem-vindo de volta, ${dadosUsuarioLogado.nome}!`);
 
-          // Opcional: Salvar na sessão o nome/pontos do usuário para exibir no jogo
-          sessionStorage.setItem("jogador", JSON.stringify(dadosUsuarioLogado));
-
+          localStorage.setItem("usuario", JSON.stringify(dadosUsuarioLogado));
+          console.log("usuario armazenado: " + localStorage.getItem("usuario"))
           onSubmit(); // Avança para a tela Home do app
         }
       } catch (error) {
@@ -95,19 +100,25 @@ function Formulario({ tipo, onSwitch, onSubmit, urlAPI }) {
         } else {
           setError("Erro ao conectar com o servidor.");
         }
-      } finally{
+      } finally {
         setLoanding(false);
       }
     }
   };
 
+  useEffect(() => {
+    if(localStorage.getItem("usuario")){
+      onSubmit();
+    }
+  });
+
   return (
     <form className={styles.form} onSubmit={handleSubmit}>
-      {error && loading? <p>{loading}</p> : ""} 
+      {error && loading ? <p>{loading}</p> : ""}
       {/* se tiver erro e estiver carregando */}
       {error && loading == false ? <p>{error}</p> : ""}
       {/* se tiver erro e não estiver carregando */}
-      {error == null && loading? <p>Carregando...</p> : ""}
+      {error == null && loading ? <p>Carregando...</p> : ""}
       <Input
         ref={usuarioRef}
         tipoInput="text"
