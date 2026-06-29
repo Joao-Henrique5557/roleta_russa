@@ -23,7 +23,10 @@ public class CorsFilter implements Filter {
         HttpServletResponse res = (HttpServletResponse) response;
 
         // 1. Permite o acesso do seu frontend local
-        res.setHeader("Access-Control-Allow-Origin", "http://localhost:5173");
+        String origin = req.getHeader("Origin");
+        if ("https://roleta-russa.netlify.app".equals(origin) || "http://localhost:5173".equals(origin)) {
+            res.setHeader("Access-Control-Allow-Origin", origin);
+        }
         
         // 2. Define os métodos permitidos
         res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
