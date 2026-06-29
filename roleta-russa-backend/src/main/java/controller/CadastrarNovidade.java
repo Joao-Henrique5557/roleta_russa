@@ -22,7 +22,6 @@ public class CadastrarNovidade extends HttpServlet {
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		configurarCORS(response);
 		request.setCharacterEncoding("UTF-8");
 		response.setContentType("application/json");
 		response.setCharacterEncoding("UTF-8");
@@ -71,18 +70,5 @@ public class CadastrarNovidade extends HttpServlet {
 			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 			out.write("{\"error\": \"Erro ao salvar no banco de dados.\"}");
 		}
-	}
-
-	@Override
-	protected void doOptions(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
-		configurarCORS(response);
-		response.setStatus(HttpServletResponse.SC_OK);
-	}
-
-	private void configurarCORS(HttpServletResponse response) {
-		response.setHeader("Access-Control-Allow-Origin", "*");
-		response.setHeader("Access-Control-Allow-Methods", "POST, GET, OPTIONS");
-		response.setHeader("Access-Control-Allow-Headers", "Content-Type");
 	}
 }

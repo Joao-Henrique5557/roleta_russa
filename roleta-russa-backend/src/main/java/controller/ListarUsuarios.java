@@ -20,11 +20,6 @@ public class ListarUsuarios extends HttpServlet {
     }
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// Configura o CORS (importante para o Frontend do Netlify conseguir acessar a API do Render)
-		response.setHeader("Access-Control-Allow-Origin", "*");
-		response.setHeader("Access-Control-Allow-Methods", "GET, OPTIONS");
-		response.setHeader("Access-Control-Allow-Headers", "Content-Type");
-		
 		// Define que a resposta será um JSON em formato UTF-8
 		response.setContentType("application/json");
 		response.setCharacterEncoding("UTF-8");

@@ -21,22 +21,14 @@ public class ListarNovidades extends HttpServlet {
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		// 1. Configura o CORS (Fundamental para o React local conseguir ler a API)
-		response.setHeader("Access-Control-Allow-Origin", "*");
-		response.setHeader("Access-Control-Allow-Methods", "GET, OPTIONS");
-		response.setHeader("Access-Control-Allow-Headers", "Content-Type");
-
-		// 2. Define que a resposta será um JSON em formato UTF-8
 		response.setContentType("application/json");
 		response.setCharacterEncoding("UTF-8");
 
 		PrintWriter out = response.getWriter();
 
-		// 3. Busca a lista de novidades ativas do banco de dados
 		NovidadeDAO dao = new NovidadeDAO();
 		List<Novidade> novidades = dao.listarTodas();
 
-		// 4. Monta a String JSON manualmente para evitar dependências externas
 		StringBuilder json = new StringBuilder();
 		json.append("[");
 		for (int i = 0; i < novidades.size(); i++) {
@@ -53,14 +45,12 @@ public class ListarNovidades extends HttpServlet {
 			json.append("\"ativo\":").append(n.isAtivo());
 			json.append("}");
 
-			// Adiciona vírgula entre os objetos, exceto no último
 			if (i < novidades.size() - 1) {
 				json.append(",");
 			}
 		}
 		json.append("]");
 
-		// 5. Envia o JSON de volta para o cliente
 		out.write(json.toString());
 	}
 

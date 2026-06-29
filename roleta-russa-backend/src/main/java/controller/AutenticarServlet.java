@@ -23,10 +23,6 @@ public class AutenticarServlet extends HttpServlet {
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		// 1. Configurações de CORS e codificação
-		response.setHeader("Access-Control-Allow-Origin", "*");
-		response.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
-		response.setHeader("Access-Control-Allow-Headers", "Content-Type");
 		request.setCharacterEncoding("UTF-8");
 		response.setContentType("application/json");
 		response.setCharacterEncoding("UTF-8");
